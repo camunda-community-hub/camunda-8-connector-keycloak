@@ -7,12 +7,8 @@ import io.camunda.connector.keycloak.KeycloakFunction;
 import io.camunda.connector.keycloak.KeycloakInput;
 import io.camunda.connector.keycloak.KeycloakOutput;
 import io.camunda.connector.keycloak.toolbox.KeycloakSubFunction;
-
-import java.util.List;
-import java.util.Map;
-
+import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -22,68 +18,74 @@ import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public class AddUserFunction implements KeycloakSubFunction {
 
   private final Logger logger = LoggerFactory.getLogger(AddUserFunction.class.getName());
 
-
   @Override
-  public KeycloakOutput executeSubFunction(KeycloakInput keycloakInput, OutboundConnectorContext context) throws
-      ConnectorException {
+  public KeycloakOutput executeSubFunction(Keycloak keycloak,
+                                           KeycloakInput keycloakInput,
+                                           OutboundConnectorContext context) throws ConnectorException {
+
+    String userSignature = "User name:["+keycloakInput.getUserName()
+        +"] firstName["+keycloakInput.getUserFirstName()
+        +"] lastName["+keycloakInput.getUserLastName()
+        +"] Email["+keycloakInput.getUserEmail()
+        +"] Password["+KeycloakFunction.getLogSecret(keycloakInput.getUserPassword())+"]";
+    try {
+      // Initialize Keycloak client
+      // https://github.com/camunda-cloud/identity/blob/main/management-api/src/main/java/io/camunda/identity/impl/keycloak/initializer/KeycloakUserInitializer.java
+      // https://github.com/camunda-cloud/identity/blob/main/management-api/src/main/java/io/camunda/identity/impl/keycloak/initializer/KeycloakUserInitializer.java#L111-L124
+
+      // Get realm
+      RealmResource realmResource = keycloak.realm(keycloakInput.getRealm());
+      UsersResource usersResource = realmResource.users();
 
 
-    // Initialize Keycloak client
-    Keycloak keycloak = KeycloakBuilder.builder()
-        .serverUrl(keycloakInput.getServerUrl())
-        .realm(keycloakInput.getRealm())
-        .clientId(keycloakInput.getClientId())
-        .username(keycloakInput.getAdminUserName())
-        .password(keycloakInput.getAdminUserPassword())
-        .build();
+      // Create a password credential
+      CredentialRepresentation passwordCredential = new CredentialRepresentation();
+      passwordCredential.setTemporary(false);
+      passwordCredential.setType(CredentialRepresentation.PASSWORD);
+      passwordCredential.setValue(keycloakInput.getAdminUserPassword());
 
-    // Get realm
-    RealmResource realmResource = keycloak.realm(keycloakInput.getRealm());
-    UsersResource usersResource = realmResource.users();
+      // Create new user representation
+      UserRepresentation newUser = new UserRepresentation();
+      newUser.setUsername(keycloakInput.getUserName());
+      newUser.setFirstName(keycloakInput.getUserFirstName());
+      newUser.setLastName(keycloakInput.getUserLastName());
+      newUser.setEmail(keycloakInput.getUserEmail());
+      newUser.setEnabled(true);
+      newUser.setCredentials(Collections.singletonList(passwordCredential));
 
-    // Create new user representation
-    UserRepresentation newUser = new UserRepresentation();
-    newUser.setUsername(keycloakInput.getUserName());
-    newUser.setFirstName(keycloakInput.getUserFirstName());
-    newUser.setLastName(keycloakInput.getUserLastName());
-    newUser.setEmail(keycloakInput.getUserEmail());
-    newUser.setEnabled(true);
 
-    // Create a password credential
-    CredentialRepresentation passwordCredential = new CredentialRepresentation();
-    passwordCredential.setTemporary(false);
-    passwordCredential.setType(CredentialRepresentation.PASSWORD);
-    passwordCredential.setValue(keycloakInput.getAdminUserPassword());
+      // Create the user in Keycloak
+      Response response = usersResource.create(newUser);
+      Optional<String> userId = Optional.of(CreatedResponseUtil.getCreatedId(response));
 
-    // Set password credentials to the user
-    newUser.setCredentials(Collections.singletonList(passwordCredential));
+      // Check if the user was created successfully
+      int responseStatus = response.getStatus();
+      response.close(); // Close the response to avoid resource leaks
 
-    // Create the user in Keycloak
-    Response response = usersResource.create(newUser);
+      if (responseStatus == 201) {
+        logger.info("User [{}] created with success", userSignature);
 
-    // Check if the user was created successfully
-    int responseStatus =response.getStatus();
-    response.close(); // Close the response to avoid resource leaks
-
-    // Close Keycloak client
-    keycloak.close();
-
-    if (responseStatus == 201) {
-      logger.info("User [{}] created with success", keycloakInput.getUserName());
-
-    } else {
-      logger.info("Failed to create user [{}]  status:{}", keycloakInput.getUserName(),responseStatus);
-      throw new ConnectorException(KeycloakFunction.ERROR_CREATE_USER, "Fail create user [" + keycloakInput.getUserName()+"] status ["+responseStatus + "]");
+      } else {
+        logger.info("Failed to create user [{}] in {} status:{}", userSignature, KeycloakFunction.getKeycloackSignature(keycloakInput), responseStatus);
+        throw new ConnectorException(KeycloakFunction.ERROR_CREATE_USER,
+            "Fail create " + userSignature + " status [" + responseStatus + "]");
+      }
+      KeycloakOutput keycloakOutput = new KeycloakOutput();
+      keycloakOutput.status = "SUCCESS";
+      keycloakOutput.dateOperation = response.getDate();
+      return keycloakOutput;
+    } catch (Exception e) {
+      logger.error("Error during KeycloakAddUser on {} {} : {}",KeycloakFunction.getKeycloackSignature(keycloakInput),userSignature, e);
+      throw new ConnectorException(KeycloakFunction.ERROR_CREATE_USER, "Error during add-user " + e.getMessage());
     }
-    KeycloakOutput keycloakOutput = new KeycloakOutput();
-    keycloakOutput.status="SUCCESS";
-    keycloakOutput.dateOperation = response.getDate();
-  return keycloakOutput;
-
   }
 
   @Override
@@ -98,7 +100,7 @@ public class AddUserFunction implements KeycloakSubFunction {
 
   @Override
   public Map<String, String> getSubFunctionListBpmnErrors() {
-    return Map.of(KeycloakFunction.ERROR_CREATE_USER,KeycloakFunction.ERROR_CREATE_USER_LABEL);
+    return Map.of(KeycloakFunction.ERROR_CREATE_USER, KeycloakFunction.ERROR_CREATE_USER_LABEL);
   }
 
   @Override

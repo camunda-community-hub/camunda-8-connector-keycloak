@@ -8,9 +8,7 @@ import io.camunda.connector.keycloak.KeycloakInput;
 import io.camunda.connector.keycloak.KeycloakOutput;
 import io.camunda.connector.keycloak.toolbox.KeycloakSubFunction;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
@@ -26,18 +24,12 @@ public class SearchUserFunction implements KeycloakSubFunction {
   private final Logger logger = LoggerFactory.getLogger(SearchUserFunction.class.getName());
 
   @Override
-  public KeycloakOutput executeSubFunction(KeycloakInput keycloakInput, OutboundConnectorContext context)
-      throws ConnectorException {
+  public KeycloakOutput executeSubFunction(Keycloak keycloak,
+                                           KeycloakInput keycloakInput,
+                                           OutboundConnectorContext context) throws ConnectorException {
 
+    String searchUserSignature = "";
     try {
-      // Initialize Keycloak client
-      Keycloak keycloak = KeycloakBuilder.builder()
-          .serverUrl(keycloakInput.getServerUrl())
-          .realm(keycloakInput.getRealm())
-          .clientId(keycloakInput.getClientId())
-          .username(keycloakInput.getAdminUserName())
-          .password(keycloakInput.getAdminUserPassword())
-          .build();
 
       // Get realm
       RealmResource realmResource = keycloak.realm(keycloakInput.getRealm());
@@ -45,19 +37,27 @@ public class SearchUserFunction implements KeycloakSubFunction {
 
       KeycloakOutput keycloakOutput = new KeycloakOutput();
 
-      if (keycloakInput.getUserId() != null) {
-        UserResource userResource = usersResource.get(keycloakInput.getUserId());
-        UserRepresentation user = userResource.toRepresentation();
-        keycloakOutput.listUsers = List.of(userToMap(user));
+      if (keycloakInput.getUserId() != null && !keycloakInput.getUserId().isEmpty()) {
+        searchUserSignature = "userId[" + keycloakInput.getUserId() + "]";
+        List<UserRepresentation> users = usersResource.search(keycloakInput.getUserId(), true);
+        keycloakOutput.listUsers = users.stream().map(this::userToMap).collect(Collectors.toList());
+
+        //        UserResource userResource = usersResource.get(keycloakInput.getUserId());
+        //        UserRepresentation user = userResource.toRepresentation();
+        //        keycloakOutput.listUsers = List.of(userToMap(user));
       } else {
+        searchUserSignature =
+            "userName [" + keycloakInput.getUserName() + "] firstName [" + keycloakInput.getUserFirstName()
+                + "] lastName [" + keycloakInput.getUserLastName() + "] email [" + keycloakInput.getUserEmail()
+                + "] pageNumber [" + keycloakInput.getPageNumber() + "] pageSize [" + keycloakInput.getPageSize() + "]";
         List<UserRepresentation> users = usersResource.search(getSearchCriteria(keycloakInput.getUserName()),
             getSearchCriteria(keycloakInput.getUserFirstName()), getSearchCriteria(keycloakInput.getUserLastName()),
             getSearchCriteria(keycloakInput.getUserEmail()), keycloakInput.getPageNumber(),
             keycloakInput.getPageSize());
 
         keycloakOutput.listUsers = users.stream().map(this::userToMap).collect(Collectors.toList());
-
       }
+      logger.info("Search User {} Found {} users", searchUserSignature, keycloakOutput.listUsers);
 
       // Close Keycloak client
       keycloak.close();
@@ -65,14 +65,9 @@ public class SearchUserFunction implements KeycloakSubFunction {
       return keycloakOutput;
 
     } catch (Exception e) {
-      throw new ConnectorException(KeycloakFunction.ERROR_SEARCH_USER, "Fail search user userId[" + keycloakInput.getUserId()
-          +"] userName ["+keycloakInput.getUserName()
-          +"] firstName ["+keycloakInput.getUserFirstName()
-          +"] lastName ["+keycloakInput.getUserLastName()
-          +"] email ["+keycloakInput.getUserEmail()
-          +"] pageNumber ["+keycloakInput.getPageNumber()
-          +"] pageSize ["+keycloakInput.getPageSize()
-          + "] : "+e.getMessage());
+      logger.error("Error during KeycloakSearchUser on {} : SearchUser {}{}",KeycloakFunction.getKeycloackSignature(keycloakInput), searchUserSignature, e);
+      throw new ConnectorException(KeycloakFunction.ERROR_SEARCH_USER,
+          "Fail search user " + searchUserSignature + " : " + e.getMessage());
 
     }
 
@@ -105,7 +100,7 @@ public class SearchUserFunction implements KeycloakSubFunction {
 
   @Override
   public String getSubFunctionType() {
-    return "search-user";
+    return "search-users";
   }
 
   private String getSearchCriteria(String criteriaContent) {

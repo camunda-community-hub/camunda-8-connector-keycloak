@@ -8,7 +8,6 @@ import io.camunda.connector.keycloak.KeycloakInput;
 import io.camunda.connector.keycloak.KeycloakOutput;
 import io.camunda.connector.keycloak.toolbox.KeycloakSubFunction;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.slf4j.Logger;
@@ -23,17 +22,11 @@ public class RemoveUserFunction implements KeycloakSubFunction {
   private final Logger logger = LoggerFactory.getLogger(RemoveUserFunction.class.getName());
 
   @Override
-  public KeycloakOutput executeSubFunction(KeycloakInput keycloakInput, OutboundConnectorContext context)
+  public KeycloakOutput executeSubFunction(Keycloak keycloak,
+                                           KeycloakInput keycloakInput, OutboundConnectorContext context)
       throws ConnectorException {
 
     // Initialize Keycloak client
-    Keycloak keycloak = KeycloakBuilder.builder()
-        .serverUrl(keycloakInput.getServerUrl())
-        .realm(keycloakInput.getRealm())
-        .clientId(keycloakInput.getClientId())
-        .username(keycloakInput.getAdminUserName())
-        .password(keycloakInput.getAdminUserPassword())
-        .build();
 
     // Get realm
     RealmResource realmResource = keycloak.realm(keycloakInput.getRealm());

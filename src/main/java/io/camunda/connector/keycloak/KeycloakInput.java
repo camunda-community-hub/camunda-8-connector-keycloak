@@ -2,7 +2,6 @@ package io.camunda.connector.keycloak;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.camunda.connector.cherrytemplate.CherryInput;
-import io.camunda.connector.keycloak.toolbox.KeycloakSubFunction;
 import io.camunda.connector.keycloak.toolbox.ParameterToolbox;
 
 import java.util.List;
@@ -22,13 +21,13 @@ public class KeycloakInput implements CherryInput {
   public static final String INPUT_REALM = "realm";
   String realm = "camunda-realm";  // The realm you want to manage
 
-  public static final String INPUT_ADMIN_CLIENT_ID = "adminClientId";
-  String clientId = "admin-cli";  // Client ID for authentication
+  public static final String INPUT_CLIENT_ID = "clientId";
+  String clientId = "";  // Client ID for authentication
 
-  public static final String INPUT_ADMIN_USER_NAME = "adminUsername";
+  public static final String INPUT_ADMIN_USER_NAME = "adminUserName";
   String adminUserName = "admin";  // Admin username
 
-  public static final String INPUT_ADMIN_PASSWORD = "adminPassword";
+  public static final String INPUT_ADMIN_USER_PASSWORD = "adminUserPassword";
   String adminUserPassword = "admin";  // Admin password
 
   public static final String INPUT_USER_NAME = "userName";

@@ -8,11 +8,10 @@ import io.camunda.connector.keycloak.KeycloakOutput;
 
 import java.util.List;
 import java.util.Map;
-import io.camunda.connector.api.outbound.OutboundConnectorContext;
-import io.camunda.connector.api.error.ConnectorException;
+import org.keycloak.admin.client.Keycloak;
 
 public interface KeycloakSubFunction {
-  KeycloakOutput executeSubFunction(KeycloakInput pdfInput, OutboundConnectorContext context) throws ConnectorException;
+  KeycloakOutput executeSubFunction(Keycloak keycloak, KeycloakInput pdfInput, OutboundConnectorContext context) throws ConnectorException;
 
   List<RunnerParameter> getInputsParameter();
 
