@@ -84,7 +84,6 @@
     </dependency>
 
 
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -97,17 +96,35 @@
       <artifactId>keycloak-admin-client</artifactId>
       <version>21.1.1</version> <!-- Make sure to use the latest version -->
     </dependency>
+    <!-- not necessary
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
-      <version>3.9.1.Final</version>
+      <version>4.7.4.Final</version>
     </dependency>
-
+    -->
+    <!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs -->
+    <!--
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jackson2-provider</artifactId>
-      <version>3.9.1.Final</version>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <version>3.15.6.Final</version>
     </dependency>
+-->
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>camunda-identity</artifactId>
+      <version>8.5.5</version>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>identity-parent</artifactId>
+      <version>8.5.5</version>
+    </dependency>
+    -->
+
+
     <!-- test dependencies -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

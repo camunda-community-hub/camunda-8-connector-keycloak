@@ -12,6 +12,13 @@ import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+// import io.camunda.identity.security.jackson.CustomResteasyJacksonProvider;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +37,13 @@ public class KeycloakDirectTest {
 
   public static final String KEYCLOAK_URL = "http://localhost:18080/auth/admin";
   public static final String KEYCLOAK_REALM = "camunda-platform";
-  public static final String KEYCLOAK_CLIENT_ID = "camunda-identity-resource-server";
-  public static final String KEYCLOAK_CLIENT_SECRET = "HJNpwQx9AnmGrtcrCniOhwFxaI63ap1M";
+
+  public static final String KEYCLOAK_CLIENT_ID = "admin-cli";
+
+  // public static final String KEYCLOAK_CLIENT_ID = "camunda-identity-resource-server";
+  public static final String KEYCLOAK_CLIENT_SECRET = "Y8Vbusr39pZKCqXh9Wo7aB5MmzEBSNGB";
   public static final String KEYCLOAK_ADMIN_USER_NAME = "admin";
-  public static final String KEYCLOAK_ADMIN_USER_PASSWORD = "WkXmMnI3MO";
+  public static final String KEYCLOAK_ADMIN_USER_PASSWORD = "admin";
 
   private final static Logger logger = LoggerFactory.getLogger(KeycloakDirectTest.class.getName());
 
@@ -87,9 +97,10 @@ public class KeycloakDirectTest {
         .realm(KEYCLOAK_REALM) //
         .grantType(OAuth2Constants.PASSWORD) //
         .clientId(KEYCLOAK_CLIENT_ID) //
-        // .clientSecret(clientSecret) //
+        // .clientSecret(KEYCLOAK_CLIENT_SECRET) //
         .username(KEYCLOAK_ADMIN_USER_NAME) //
         .password(KEYCLOAK_ADMIN_USER_PASSWORD) //
+        // .resteasyClient(resteasyClient)
         .build();
     RealmResource realmResource = keycloak.realm(KEYCLOAK_REALM);
 
@@ -150,7 +161,21 @@ public class KeycloakDirectTest {
 
     // Delete User
     userResource.remove();
+  }
 
+  public Client resteasyClient() {
+    var objectMapper = new ObjectMapper();
+    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+/*
+    var jacksonProvider = new CustomResteasyJacksonProvider();
+    jacksonProvider.setMapper(objectMapper);
+
+    return ClientBuilder.newBuilder()
+        .register(jacksonProvider)
+        .build();
+*/
+  return null;
   }
 }
 
