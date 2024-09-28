@@ -6,14 +6,12 @@ import io.camunda.connector.cherrytemplate.RunnerParameter;
 import io.camunda.connector.keycloak.KeycloakFunction;
 import io.camunda.connector.keycloak.KeycloakInput;
 import io.camunda.connector.keycloak.KeycloakOutput;
+import io.camunda.connector.keycloak.toolbox.KeycloakOperation;
 import io.camunda.connector.keycloak.toolbox.KeycloakSubFunction;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.ws.rs.core.Response;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,39 +20,18 @@ public class RemoveUserFunction implements KeycloakSubFunction {
   private final Logger logger = LoggerFactory.getLogger(RemoveUserFunction.class.getName());
 
   @Override
-  public KeycloakOutput executeSubFunction(Keycloak keycloak,
-                                           KeycloakInput keycloakInput, OutboundConnectorContext context)
-      throws ConnectorException {
+  public KeycloakOutput executeSubFunction(KeycloakOperation keycloakOperation,
+                                           KeycloakInput keycloakInput,
+                                           OutboundConnectorContext context) throws ConnectorException {
 
     // Initialize Keycloak client
+    keycloakOperation.deleteUser(keycloakInput.getRealm(), keycloakInput.getUserId());
 
-    // Get realm
-    RealmResource realmResource = keycloak.realm(keycloakInput.getRealm());
-    UsersResource usersResource = realmResource.users();
-    Response response = usersResource.delete(keycloakInput.getUserId());
-    // Check if the user was created successfully
-    int responseStatus =response.getStatus();
-    response.close(); // Close the response to avoid resource leaks
-
-    // Close Keycloak client
-    keycloak.close();
-
-
-    if (responseStatus == 201) {
-      logger.info("User [{}] created with success", keycloakInput.getUserName());
-
-    } else {
-      logger.info("Failed to remove user [{}]  status:{}", keycloakInput.getUserId(),responseStatus);
-      throw new ConnectorException(
-          KeycloakFunction.ERROR_REMOVE_USER,
-          "Fail remove user [" + keycloakInput.getUserName()+"] status ["+responseStatus + "]");
-    }
     KeycloakOutput keycloakOutput = new KeycloakOutput();
-    keycloakOutput.status="SUCCESS";
-    keycloakOutput.dateOperation = response.getDate();
+    keycloakOutput.status = "SUCCESS";
+    keycloakOutput.dateOperation = new Date();
     return keycloakOutput;
   }
-
 
   @Override
   public List<RunnerParameter> getInputsParameter() {
@@ -68,7 +45,7 @@ public class RemoveUserFunction implements KeycloakSubFunction {
 
   @Override
   public Map<String, String> getSubFunctionListBpmnErrors() {
-    return Map.of(KeycloakFunction.ERROR_REMOVE_USER,KeycloakFunction.ERROR_REMOVE_USER_LABEL);
+    return Map.of(KeycloakFunction.ERROR_REMOVE_USER, KeycloakFunction.ERROR_REMOVE_USER_LABEL);
   }
 
   @Override

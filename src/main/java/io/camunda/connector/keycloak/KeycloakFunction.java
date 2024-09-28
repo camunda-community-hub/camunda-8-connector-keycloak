@@ -1,19 +1,15 @@
 package io.camunda.connector.keycloak;
 
-
 import io.camunda.connector.api.annotation.OutboundConnector;
 import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
 import io.camunda.connector.api.outbound.OutboundConnectorFunction;
 import io.camunda.connector.cherrytemplate.CherryConnector;
+import io.camunda.connector.keycloak.toolbox.KeycloakOperation;
 import io.camunda.connector.keycloak.toolbox.KeycloakSubFunction;
 import io.camunda.connector.keycloak.user.AddUserFunction;
 import io.camunda.connector.keycloak.user.RemoveUserFunction;
 import io.camunda.connector.keycloak.user.SearchUserFunction;
-
-import org.keycloak.OAuth2Constants;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +24,8 @@ import java.util.Map;
     KeycloakInput.INPUT_SERVER_URL, KeycloakInput.INPUT_REALM, KeycloakInput.INPUT_CLIENT_ID,
     KeycloakInput.INPUT_ADMIN_USER_NAME, KeycloakInput.INPUT_ADMIN_USER_PASSWORD, KeycloakInput.INPUT_USER_NAME,
     KeycloakInput.INPUT_USER_FIRSTNAME, KeycloakInput.INPUT_USER_LASTNAME, KeycloakInput.INPUT_USER_EMAIL,
-    KeycloakInput.INPUT_USER_PASSWORD, KeycloakInput.INPUT_USER_ID, KeycloakInput.INPUT_PAGE_NUMBER,
+    KeycloakInput.INPUT_USER_PASSWORD, KeycloakInput.INPUT_USER_ID, KeycloakInput.INPUT_USER_ENABLED,
+    KeycloakInput.INPUT_USER_ROLES, KeycloakInput.INPUT_PAGE_NUMBER,
     KeycloakInput.INPUT_PAGE_SIZE }, type = "c-keycloak-function")
 
 public class KeycloakFunction implements OutboundConnectorFunction, CherryConnector {
@@ -59,41 +56,48 @@ public class KeycloakFunction implements OutboundConnectorFunction, CherryConnec
     String function = keycloakInput.getKeycloakFunction();
     long beginTime = System.currentTimeMillis();
 
-    logger.info("KeycloakFunction receive function [{}]", function);
 
     // do the connection
-    Keycloak keycloak = null;
-    try {
-      keycloak = KeycloakBuilder.builder()
-          .serverUrl(keycloakInput.getServerUrl())
-          .realm(keycloakInput.getRealm())
-          .clientId(keycloakInput.getClientId())
-          .clientSecret("HJNpwQx9AnmGrtcrCniOhwFxaI63ap1M") //
-          .username(keycloakInput.getAdminUserName())
-          .password(keycloakInput.getAdminUserPassword())
-          .grantType(OAuth2Constants.PASSWORD) // Grant type
-          .build();
-    } catch (Exception e) {
-      logger.error("Error during KeycloakConnection {} :  {}", getKeycloackSignature(keycloakInput), e);
-      throw new ConnectorException(KeycloakFunction.ERROR_KEYCLOAK_CONNECTION,
-          "Error during keycloakConnection function[" + function + "] : " + e.getMessage());
+    KeycloakOperation keycloakOperation = new KeycloakOperation();
+
+    // connect (a Connector exception will be thrown in case of issue)
+    if (KeycloakInput.INPUT_CONNECTION_TYPE_V_USER.equals(keycloakInput.getConnectionType())
+        || keycloakInput.getConnectionType() == null || keycloakInput.getConnectionType().isEmpty()) {
+      keycloakOperation.openByUser(keycloakInput.getServerUrl(), //
+          "master", //
+          keycloakInput.getClientId(), //
+          keycloakInput.getAdminUserName(), //
+          keycloakInput.getAdminUserPassword(), //
+          function);
+
+    } else if (KeycloakInput.INPUT_CONNECTION_TYPE_V_CLIENT_ID.equals(keycloakInput.getConnectionType())) {
+      keycloakOperation.openByClientId(keycloakInput.getServerUrl(),
+          "master",//
+          keycloakInput.getClientId(), //
+          keycloakInput.getClientSecret(), //
+          function);
     }
+
     long endKeycloakConnectionTime = System.currentTimeMillis();
+    logger.info("KeycloakFunction receive function [{}] Keycloack{}", function,
+        keycloakOperation.getKeycloakSignature());
+
+
     if (endKeycloakConnectionTime - beginTime > 500)
-      logger.info("Connection to Keycloack server {} in {} ms", getKeycloackSignature(keycloakInput),
+      logger.info("Connection to Keycloack server {} in {} ms", keycloakOperation.getKeycloakSignature(),
           endKeycloakConnectionTime - beginTime);
 
     for (KeycloakSubFunction inputSubFunction : getListSubFunctions()) {
       if (inputSubFunction.getSubFunctionType().equals(function)) {
-        KeycloakOutput keycloakOutput = inputSubFunction.executeSubFunction(keycloak, keycloakInput,
+        KeycloakOutput keycloakOutput = inputSubFunction.executeSubFunction(keycloakOperation, keycloakInput,
             outboundConnectorContext);
         logger.info("KeycloakFunction End function [{}] in {} ms", function, System.currentTimeMillis() - beginTime);
-        keycloak.close();
+        keycloakOperation.close();
         return keycloakOutput;
       }
     }
     // Close Keycloak client
-    keycloak.close();
+    keycloakOperation.close();
 
     throw new ConnectorException(ERROR_UNKNOWN_FUNCTION, "Keycloak Function Unknown [" + function + "]");
   }
@@ -154,33 +158,6 @@ public class KeycloakFunction implements OutboundConnectorFunction, CherryConnec
 
     }
     return listSubFunction;
-  }
-
-  /**
-   * To log the keycloack connection, return a signature of it
-   *
-   * @param keycloakInput input of connector
-   * @return a signature
-   */
-  public static String getKeycloackSignature(KeycloakInput keycloakInput) {
-    return "KeycloakConnection: { Url[" + keycloakInput.getServerUrl() + "] Realm[" + keycloakInput.getRealm()
-        + "] clientId[" + keycloakInput.getClientId() + "] adminUserName[" + getLogSecret(
-        keycloakInput.getAdminUserName()) + "] adminUserPassword[" + getLogSecret(keycloakInput.getAdminUserPassword())
-        + "] }";
-  }
-
-  /**
-   * Protect the value by obfuscated part of it
-   *
-   * @param secret value to protect
-   * @return part of the value
-   */
-  public static String getLogSecret(String secret) {
-    if (secret == null)
-      return "null";
-    if (secret.length() > 3)
-      return secret.substring(0, 3) + "****";
-    return "****";
   }
 
 }

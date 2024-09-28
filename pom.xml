@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.example</groupId>
@@ -49,7 +46,6 @@
 
 
   <dependencies>
-
     <dependency>
       <groupId>io.camunda.connector</groupId>
       <artifactId>connector-core</artifactId>
@@ -62,21 +58,12 @@
       <version>${version.connector-core}</version>
       <scope>provided</scope>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda</artifactId>
-      <version>8.5.2</version>
-    </dependency>
--->
 
-    <!-- require for connector-core -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.17.0</version>
+      <version>2.17.0</version> <!-- Replace {version} with the desired version -->
     </dependency>
-    <!-- https://mvnrepository.com/artifact/jakarta.ws.rs/jakarta.ws.rs-api -->
     <dependency>
       <groupId>jakarta.ws.rs</groupId>
       <artifactId>jakarta.ws.rs-api</artifactId>
@@ -96,34 +83,6 @@
       <artifactId>keycloak-admin-client</artifactId>
       <version>21.1.1</version> <!-- Make sure to use the latest version -->
     </dependency>
-    <!-- not necessary
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-client</artifactId>
-      <version>4.7.4.Final</version>
-    </dependency>
-    -->
-    <!-- https://mvnrepository.com/artifact/org.jboss.resteasy/resteasy-jaxrs -->
-    <!--
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-      <version>3.15.6.Final</version>
-    </dependency>
--->
-    <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>camunda-identity</artifactId>
-      <version>8.5.5</version>
-    </dependency>
-    <!--
-    <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>identity-parent</artifactId>
-      <version>8.5.5</version>
-    </dependency>
-    -->
-
 
     <!-- test dependencies -->
     <dependency>
@@ -248,14 +207,14 @@
             </filters>
             <transformers>
               <!-- This is needed if you have dependencies that use Service Loader. Most Google Cloud client libraries does. -->
-              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
               <!-- This is needed to not repeat licenses in the META-INF directory -->
-              <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
               <!-- This is needed to merge existing NOTICE files and keep them downstream -->
               <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
                 <addHeader>false</addHeader>
               </transformer>
-              <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer" />
             </transformers>
             <!-- Uncomment and adjust to use relocations inside your JAR -->
             <!--<relocations>

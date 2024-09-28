@@ -6,84 +6,45 @@ import io.camunda.connector.cherrytemplate.RunnerParameter;
 import io.camunda.connector.keycloak.KeycloakFunction;
 import io.camunda.connector.keycloak.KeycloakInput;
 import io.camunda.connector.keycloak.KeycloakOutput;
+import io.camunda.connector.keycloak.toolbox.KeycloakOperation;
 import io.camunda.connector.keycloak.toolbox.KeycloakSubFunction;
-import org.keycloak.admin.client.CreatedResponseUtil;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.Response;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AddUserFunction implements KeycloakSubFunction {
 
   private final Logger logger = LoggerFactory.getLogger(AddUserFunction.class.getName());
 
   @Override
-  public KeycloakOutput executeSubFunction(Keycloak keycloak,
+  public KeycloakOutput executeSubFunction(KeycloakOperation keycloakOperation,
                                            KeycloakInput keycloakInput,
                                            OutboundConnectorContext context) throws ConnectorException {
 
-    String userSignature = "User name:["+keycloakInput.getUserName()
-        +"] firstName["+keycloakInput.getUserFirstName()
-        +"] lastName["+keycloakInput.getUserLastName()
-        +"] Email["+keycloakInput.getUserEmail()
-        +"] Password["+KeycloakFunction.getLogSecret(keycloakInput.getUserPassword())+"]";
+    KeycloakOutput keycloakOutput = new KeycloakOutput();
     try {
-      // Initialize Keycloak client
-      // https://github.com/camunda-cloud/identity/blob/main/management-api/src/main/java/io/camunda/identity/impl/keycloak/initializer/KeycloakUserInitializer.java
-      // https://github.com/camunda-cloud/identity/blob/main/management-api/src/main/java/io/camunda/identity/impl/keycloak/initializer/KeycloakUserInitializer.java#L111-L124
+      keycloakOutput.userId = keycloakOperation.addUser(keycloakInput.getRealm(), keycloakInput.getUserName(),
+          keycloakInput.getUserFirstName(), keycloakInput.getUserLastName(), keycloakInput.getUserEmail(),
+          keycloakInput.getUserPassword(), Boolean.TRUE.equals(keycloakInput.getEnabledUser()));
 
-      // Get realm
-      RealmResource realmResource = keycloak.realm(keycloakInput.getRealm());
-      UsersResource usersResource = realmResource.users();
+      // add role?
+      if (keycloakInput.getUserRoles() != null) {
+        List<String> listRoles = Arrays.stream(keycloakInput.getUserRoles().split(",")).collect(Collectors.toList());
+        keycloakOperation.addRole(keycloakInput.getRealm(), keycloakOutput.userId, listRoles);
 
-
-      // Create a password credential
-      CredentialRepresentation passwordCredential = new CredentialRepresentation();
-      passwordCredential.setTemporary(false);
-      passwordCredential.setType(CredentialRepresentation.PASSWORD);
-      passwordCredential.setValue(keycloakInput.getAdminUserPassword());
-
-      // Create new user representation
-      UserRepresentation newUser = new UserRepresentation();
-      newUser.setUsername(keycloakInput.getUserName());
-      newUser.setFirstName(keycloakInput.getUserFirstName());
-      newUser.setLastName(keycloakInput.getUserLastName());
-      newUser.setEmail(keycloakInput.getUserEmail());
-      newUser.setEnabled(true);
-      newUser.setCredentials(Collections.singletonList(passwordCredential));
-
-
-      // Create the user in Keycloak
-      Response response = usersResource.create(newUser);
-      Optional<String> userId = Optional.of(CreatedResponseUtil.getCreatedId(response));
-
-      // Check if the user was created successfully
-      int responseStatus = response.getStatus();
-      response.close(); // Close the response to avoid resource leaks
-
-      if (responseStatus == 201) {
-        logger.info("User [{}] created with success", userSignature);
-
-      } else {
-        logger.info("Failed to create user [{}] in {} status:{}", userSignature, KeycloakFunction.getKeycloackSignature(keycloakInput), responseStatus);
-        throw new ConnectorException(KeycloakFunction.ERROR_CREATE_USER,
-            "Fail create " + userSignature + " status [" + responseStatus + "]");
       }
-      KeycloakOutput keycloakOutput = new KeycloakOutput();
       keycloakOutput.status = "SUCCESS";
-      keycloakOutput.dateOperation = response.getDate();
+      keycloakOutput.dateOperation = new Date();
       return keycloakOutput;
+    } catch( ConnectorException ce) {
+      throw ce;
     } catch (Exception e) {
-      logger.error("Error during KeycloakAddUser on {} {} : {}",KeycloakFunction.getKeycloackSignature(keycloakInput),userSignature, e);
+      logger.error("Error during KeycloakAddUser on {} {} : {}",keycloakOperation.getKeycloakSignature(),keycloakInput.getUserSignature(), e);
       throw new ConnectorException(KeycloakFunction.ERROR_CREATE_USER, "Error during add-user " + e.getMessage());
     }
   }

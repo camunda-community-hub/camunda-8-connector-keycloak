@@ -6,6 +6,7 @@ import io.camunda.connector.cherrytemplate.RunnerParameter;
 import io.camunda.connector.keycloak.KeycloakFunction;
 import io.camunda.connector.keycloak.KeycloakInput;
 import io.camunda.connector.keycloak.KeycloakOutput;
+import io.camunda.connector.keycloak.toolbox.KeycloakOperation;
 import io.camunda.connector.keycloak.toolbox.KeycloakSubFunction;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -24,18 +25,17 @@ public class SearchUserFunction implements KeycloakSubFunction {
   private final Logger logger = LoggerFactory.getLogger(SearchUserFunction.class.getName());
 
   @Override
-  public KeycloakOutput executeSubFunction(Keycloak keycloak,
+  public KeycloakOutput executeSubFunction(KeycloakOperation keycloakOperation,
                                            KeycloakInput keycloakInput,
                                            OutboundConnectorContext context) throws ConnectorException {
 
-    String searchUserSignature = "";
+    KeycloakOutput keycloakOutput = new KeycloakOutput();
     try {
-
+/*
       // Get realm
       RealmResource realmResource = keycloak.realm(keycloakInput.getRealm());
       UsersResource usersResource = realmResource.users();
 
-      KeycloakOutput keycloakOutput = new KeycloakOutput();
 
       if (keycloakInput.getUserId() != null && !keycloakInput.getUserId().isEmpty()) {
         searchUserSignature = "userId[" + keycloakInput.getUserId() + "]";
@@ -58,16 +58,17 @@ public class SearchUserFunction implements KeycloakSubFunction {
         keycloakOutput.listUsers = users.stream().map(this::userToMap).collect(Collectors.toList());
       }
       logger.info("Search User {} Found {} users", searchUserSignature, keycloakOutput.listUsers);
-
+*/
       // Close Keycloak client
-      keycloak.close();
+
       keycloakOutput.status = "SUCCESS";
       return keycloakOutput;
 
     } catch (Exception e) {
-      logger.error("Error during KeycloakSearchUser on {} : SearchUser {}{}",KeycloakFunction.getKeycloackSignature(keycloakInput), searchUserSignature, e);
+      logger.error("Error during KeycloakSearchUser on {} : SearchUser {}{}",
+          keycloakOperation.getKeycloakSignature(), keycloakInput.getUserSignature(), e);
       throw new ConnectorException(KeycloakFunction.ERROR_SEARCH_USER,
-          "Fail search user " + searchUserSignature + " : " + e.getMessage());
+          "Fail search user " + keycloakInput.getUserSignature() + " : " + e.getMessage());
 
     }
 
