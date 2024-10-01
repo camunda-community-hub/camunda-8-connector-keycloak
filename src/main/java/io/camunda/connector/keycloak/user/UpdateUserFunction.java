@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UpdateUserFunction implements KeycloakSubFunction {
@@ -28,7 +29,9 @@ public class UpdateUserFunction implements KeycloakSubFunction {
                                            OutboundConnectorContext context) throws ConnectorException {
 
     KeycloakOutput keycloakOutput = new KeycloakOutput();
+    String trace = " userId[" + keycloakInput.getUserId() + "]";
     try {
+
       Map<KeycloakOperation.UserProperties, Object> updateProperties = new HashMap<>();
       if (containsInformation(keycloakInput.getUserName()))
         updateProperties.put(KeycloakOperation.UserProperties.USERNAME, keycloakInput.getUserName());
@@ -38,46 +41,138 @@ public class UpdateUserFunction implements KeycloakSubFunction {
         updateProperties.put(KeycloakOperation.UserProperties.LASTNAME, keycloakInput.getUserLastName());
       if (containsInformation(keycloakInput.getUserEmail()))
         updateProperties.put(KeycloakOperation.UserProperties.EMAIL, keycloakInput.getUserEmail());
-      if (containsInformation(keycloakInput.getEnabledUser()))
-        updateProperties.put(KeycloakOperation.UserProperties.ENABLED, keycloakInput.getEnabledUser());
-
-      if (! updateProperties.isEmpty())
-        keycloakOperation.updateUser(keycloakInput.getRealm(), keycloakInput.getUserId(), updateProperties);
-
-      if (containsInformation(keycloakInput.getUserPassword()))
-        keycloakOperation.setPassword(keycloakInput.getRealm(), keycloakInput.getUserId(), keycloakInput.getUserPassword());
-
+      if (containsInformation(keycloakInput.getUserEnabled()))
+        updateProperties.put(KeycloakOperation.UserProperties.ENABLED, keycloakInput.getUserEnabled());
+      if (!updateProperties.isEmpty()) {
+        trace += "Update: " + updateProperties.toString() + ";";
+        keycloakOperation.updateUser(keycloakInput.getUserRealm(), keycloakInput.getUserId(), updateProperties);
+      }
+      if (containsInformation(keycloakInput.getUserPassword())) {
+        trace += "Update Password;";
+        keycloakOperation.setPassword(keycloakInput.getConnectionRealm(), keycloakInput.getUserId(),
+            keycloakInput.getUserPassword());
+      }
       // add role?
       if (keycloakInput.getUserRoles() != null) {
-        List<String> listRoles = Arrays.stream(keycloakInput.getUserRoles().split(",")).collect(Collectors.toList());
-        keycloakOperation.updateRole(keycloakInput.getRealm(), keycloakOutput.userId, listRoles);
+        trace += "Update newRoles:[" + keycloakInput.getUserRoles() + "];";
+        Set<String> rolesSet = Arrays.stream(keycloakInput.getUserRoles().split(",")).collect(Collectors.toSet());
+        keycloakOperation.updateRoles(keycloakInput.getUserRealm(), keycloakInput.getUserId(), rolesSet);
       }
-
+      logger.info("KeycloakUpdateUser: {}", trace);
       keycloakOutput.status = "SUCCESS";
       keycloakOutput.dateOperation = new Date();
       return keycloakOutput;
     } catch (ConnectorException ce) {
       throw ce;
     } catch (Exception e) {
-      logger.error("Error during UpdateUser on {} {} : {}", keycloakOperation.getKeycloakSignature(),
-          keycloakInput.getUserSignature(), e);
-      throw new ConnectorException(KeycloakFunction.ERROR_CREATE_USER, "Error during update-user " + e.getMessage());
+      logger.error("Error during UpdateUser on {} {} {}: {}", keycloakOperation.getKeycloakSignature(),
+          keycloakInput.getUserSignature(), trace, e);
+      throw new ConnectorException(KeycloakOperation.ERROR_CREATE_USER, "Error during update-user " + e.getMessage());
     }
   }
 
   @Override
   public List<RunnerParameter> getInputsParameter() {
-    return List.of();
+    return Arrays.asList(RunnerParameter.getInstance(KeycloakInput.INPUT_USER_REALM, //
+            KeycloakInput.INPUT_USER_REALM_LABEL, //
+            String.class, //
+            KeycloakInput.INPUT_USER_REALM_DEFAULT, //
+            RunnerParameter.Level.REQUIRED, //
+            KeycloakInput.INPUT_USER_REALM_EXPLANATION)//
+        .addCondition(KeycloakInput.INPUT_KEYCLOAK_FUNCTION, List.of(getSubFunctionType())),  //
+
+        RunnerParameter.getInstance(KeycloakInput.INPUT_USER_ID, //
+                KeycloakInput.INPUT_USER_ID_LABEL, //
+                String.class, //
+                "", //
+                RunnerParameter.Level.REQUIRED, //
+                KeycloakInput.INPUT_USER_ID_EXPLANATION)//
+            .addCondition(KeycloakInput.INPUT_KEYCLOAK_FUNCTION, List.of(getSubFunctionType())),
+
+
+        // NO Username for the moment
+        /*
+        RunnerParameter.getInstance(KeycloakInput.INPUT_USER_NAME, //
+                KeycloakInput.INPUT_USER_NAME_LABEL, //
+                String.class, //
+                "", //
+                RunnerParameter.Level.REQUIRED, //
+                KeycloakInput.INPUT_USER_NAME_EXPLANATION)//
+            .addCondition(KeycloakInput.INPUT_KEYCLOAK_FUNCTION, List.of(getSubFunctionType())),
+*/
+
+    RunnerParameter.getInstance(KeycloakInput.INPUT_USER_FIRSTNAME, //
+            KeycloakInput.INPUT_USER_FIRSTNAME_LABEL, //
+            String.class, //
+            "", //
+            RunnerParameter.Level.OPTIONAL, //
+            KeycloakInput.INPUT_USER_FIRSTNAME_EXPLANATION)//
+        .addCondition(KeycloakInput.INPUT_KEYCLOAK_FUNCTION, List.of(getSubFunctionType())),
+
+    RunnerParameter.getInstance(KeycloakInput.INPUT_USER_LASTNAME, //
+            KeycloakInput.INPUT_USER_LASTNAME_LABEL, //
+            String.class, //
+            "", //
+            RunnerParameter.Level.OPTIONAL, //
+            KeycloakInput.INPUT_USER_LASTNAME_EXPLANATION)//
+        .addCondition(KeycloakInput.INPUT_KEYCLOAK_FUNCTION, List.of(getSubFunctionType())),
+
+    RunnerParameter.getInstance(KeycloakInput.INPUT_USER_EMAIL, //
+            KeycloakInput.INPUT_USER_EMAIL_LABEL, //
+            String.class, //
+            "", //
+            RunnerParameter.Level.OPTIONAL, //
+            KeycloakInput.INPUT_USER_EMAIL_EXPLANATION)//
+        .addCondition(KeycloakInput.INPUT_KEYCLOAK_FUNCTION, List.of(getSubFunctionType())),
+
+    RunnerParameter.getInstance(KeycloakInput.INPUT_USER_ENABLED, //
+            KeycloakInput.INPUT_USER_ENABLED_LABEL, //
+            String.class, //
+            "", //
+            RunnerParameter.Level.OPTIONAL, //
+            KeycloakInput.INPUT_USER_ENABLED_EXPLANATION)//
+        .addCondition(KeycloakInput.INPUT_KEYCLOAK_FUNCTION, List.of(getSubFunctionType())),
+
+    RunnerParameter.getInstance(KeycloakInput.INPUT_USER_PASSWORD, //
+            KeycloakInput.INPUT_USER_PASSWORD_LABEL, //
+            String.class, //
+            "", //
+            RunnerParameter.Level.OPTIONAL, //
+            KeycloakInput.INPUT_USER_PASSWORD_EXPLANATION)//
+        .addCondition(KeycloakInput.INPUT_KEYCLOAK_FUNCTION, List.of(getSubFunctionType())),
+
+    RunnerParameter.getInstance(KeycloakInput.INPUT_USER_ROLES, //
+            KeycloakInput.INPUT_USER_ROLES_LABEL, //
+            String.class, //
+            "", //
+            RunnerParameter.Level.OPTIONAL, //
+            KeycloakInput.INPUT_USER_ROLES_EXPLANATION)//
+        .addCondition(KeycloakInput.INPUT_KEYCLOAK_FUNCTION, List.of(getSubFunctionType()))
+    );
+
   }
 
   @Override
   public List<RunnerParameter> getOutputsParameter() {
-    return List.of();
+    return Arrays.asList(
+        RunnerParameter.getInstance(KeycloakOutput.OUTPUT_STATUS, //
+            KeycloakOutput.OUTPUT_STATUS_LABEL, //
+            String.class, //
+            "", //
+            RunnerParameter.Level.REQUIRED, //
+            KeycloakOutput.OUTPUT_STATUS_EXPLANATION), //
+
+        RunnerParameter.getInstance(KeycloakOutput.OUTPUT_DATE_OPERATION, //
+            KeycloakOutput.OUTPUT_DATE_OPERATION_LABEL, //
+            Date.class, //
+            null, //
+            RunnerParameter.Level.REQUIRED, //
+            KeycloakOutput.OUTPUT_DATE_OPERATION_EXPLANATION)); //
   }
 
   @Override
   public Map<String, String> getSubFunctionListBpmnErrors() {
-    return Map.of(KeycloakFunction.ERROR_CREATE_USER, KeycloakFunction.ERROR_CREATE_USER_LABEL);
+    return Map.of(KeycloakOperation.ERROR_CREATE_USER, KeycloakOperation.ERROR_CREATE_USER_LABEL);
   }
 
   @Override

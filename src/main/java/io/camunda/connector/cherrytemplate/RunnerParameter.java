@@ -270,7 +270,7 @@ public class RunnerParameter {
   /**
    * Set the default value in the parameter
    *
-   * @param defaultValue
+   * @param defaultValue use to set the default value
    * @return a runnerParameter where the attribute is set to true
    */
   public RunnerParameter setDefaultValue(Object defaultValue) {
@@ -377,7 +377,7 @@ public class RunnerParameter {
 
     oneParameter.put(CherryInput.PARAMETER_MAP_VISIBLE_IN_TEMPLATE, visibleInTemplate);
 
-    logger.info("PdfParameters getMap:{}", oneParameter);
+    logger.info("getMap:{}", oneParameter);
 
     return oneParameter;
   }

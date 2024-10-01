@@ -68,7 +68,7 @@ public class ParameterToolbox {
             inputSubFunction.getOutputsParameter();
 
         chooseFunction.addChoice(inputSubFunction.getSubFunctionType(), inputSubFunction.getSubFunctionName());
-        logger.info("FileStorage SubFunctionName[{}] TypeChoice [{}] parameterList.size={}",
+        logger.info("KeycloakFunction SubFunctionName[{}] TypeChoice [{}] parameterList.size={}",
             inputSubFunction.getSubFunctionName(), inputSubFunction.getSubFunctionType(),
             subFunctionsParametersList.size());
 
