@@ -28,46 +28,34 @@ import java.util.stream.Collectors;
 
 public class KeycloakOperation {
 
-  private final Logger logger = LoggerFactory.getLogger(KeycloakOperation.class.getName());
-
   public final static String ERROR_KEYCLOAK_CONNECTION = "KEYCLOAK_CONNECTION";
   public final static String ERROR_KEYCLOAK_CONNECTION_LABEL = "Error arrived during the Keycloak connection";
-
-
-
   public final static String ERROR_CREATE_USER = "CREATE_USER";
   public final static String ERROR_CREATE_USER_LABEL = "Create user failed";
-
   public final static String ERROR_UNKNOWN_USER = "UNKNOWN_USER";
   public final static String ERROR_UNKNOWN_USER_LABEL = "Userid given is not found in Keycloak";
-
   public final static String ERROR_USER_ALREADY_EXIST = "USER_ALREADY_EXIST";
   public final static String ERROR_USER_ALREADY_EXIST_LABEL = "The username is unique in keycloak";
+  public final static String ERROR_USER_SET_PASSWORD = "USER_SET_PASSWORD";
+  public final static String ERROR_USER_SET_PASSWORD_LABEL = "Password can't be set";
 
   public final static String ERROR_UNKNOWN_ROLE = "UNKNOWN_ROLE";
   public final static String ERROR_UNKNOWN_ROLE_LABEL = "Role given is not found in Keycloak";
-
   public final static String ERROR_CANT_ACCESS_USER_ROLES = "CANT_ACCESS_USER_ROLE";
   public final static String ERROR_CANT_ACCESS_USER_ROLES_LABEL = "Can't access user roles";
-
   public final static String ERROR_DELETE_ROLE_USER = "DELETE_ROLE";
-  public final static String ERROR_DELETE_ROLE_LABEL = "Removing the role from the user fail";
-
+  public final static String ERROR_DELETE_ROLE_USER_LABEL = "Removing the role from the user fail";
   public final static String ERROR_CANT_UPDATE_USERNAME = "CANT_UPDATE_USERNAME";
   public final static String ERROR_CANT_UPDATE_USERNAME_LABEL = "Keycloak does not allow to update the username";
-
   public final static String ERROR_ADD_ROLE_USER = "ADD_ROLE";
-  public final static String ERROR_ADD_ROLE_LABEL = "Adding a role to the user fail";
-
+  public final static String ERROR_ADD_ROLE_USER_LABEL = "Adding a role to the user fail";
   public final static String ERROR_UPDATE_USER = "UPDATE_USER";
   public final static String ERROR_UPDATE_USER_LABEL = "During update user in Keycloak";
-
   public final static String ERROR_DELETE_USER = "DELETE_USER";
   public final static String ERROR_DELETE_USER_LABEL = "During delete user in Keycloak";
-
   public final static String ERROR_SEARCH_USER = "SEARCH_USER";
   public final static String ERROR_SEARCH_USER_LABEL = "During search user(s) in Keycloak";
-
+  private final Logger logger = LoggerFactory.getLogger(KeycloakOperation.class.getName());
   private Keycloak keycloak;
   private String keycloakSignature;
   // Initialize Keycloak client
@@ -75,6 +63,20 @@ public class KeycloakOperation {
   // https://github.com/camunda-cloud/identity/blob/main/management-api/src/main/java/io/camunda/identity/impl/keycloak/initializer/KeycloakUserInitializer.java#L111-L124
 
   public KeycloakOperation() {
+  }
+
+  /**
+   * Protect the value by obfuscated part of it
+   *
+   * @param secret value to protect
+   * @return part of the value
+   */
+  public static String getLogSecret(String secret) {
+    if (secret == null)
+      return "null";
+    if (secret.length() > 3)
+      return secret.substring(0, 3) + "****";
+    return "****";
   }
 
   /**
@@ -116,9 +118,9 @@ public class KeycloakOperation {
    * Open by a client ID/ Client Secret
    * never works
    *
-   * @param serverUrl serverULR to connect
-   * @param realm realm where the clientID is
-   * @param clientId client ID
+   * @param serverUrl    serverULR to connect
+   * @param realm        realm where the clientID is
+   * @param clientId     client ID
    * @param clientSecret client Secret
    */
   public void openByClientId(String serverUrl, String realm, String clientId, String clientSecret, String context)
@@ -146,7 +148,7 @@ public class KeycloakOperation {
    * CLIENTID;serverUrl;realm;clientid;clientsecret
    *
    * @param connectionUrl connectionURL, see format in description
-   * @param context context for log
+   * @param context       context for log
    * @throws ConnectorException: ERROR_KEYCLOAK_CONNECTION
    */
   public void openByConnectionURL(String connectionUrl, String context) throws ConnectorException {
@@ -186,40 +188,29 @@ public class KeycloakOperation {
     return keycloakSignature;
   }
 
-
-  /* ******************************************************************** */
-  /*                                                                      */
-  /*  users operation                                                     */
-  /*                                                                      */
-  /* ******************************************************************** */
-public class KeycloakResult {
-  public String userId;
-  public enum Status { CREATED, UPDATED}
-    public Status status;
-  }
   /**
    * addUser
    *
-   * @param realm realm to create the user
-   * @param userName user name
-   * @param firstName first name
-   * @param lastName last name
-   * @param email email
+   * @param realm        realm to create the user
+   * @param userName     user name
+   * @param firstName    first name
+   * @param lastName     last name
+   * @param email        email
    * @param userPassword password of user
-   * @param enabledUser user is enabled
-   * @exception ConnectorException ERROR_USER_ALREADY_EXIST,ERROR_CREATE_USER
+   * @param enabledUser  user is enabled
    * @return
+   * @throws ConnectorException ERROR_USER_ALREADY_EXIST,ERROR_CREATE_USER, ERROR_USER_SET_PASSWORD
    */
   public KeycloakResult createUser(String realm,
-                           String userName,
-                           String firstName,
-                           String lastName,
-                           String email,
-                           String userPassword,
-                           boolean enabledUser,
-                           boolean errorIfUserExists) throws ConnectorException {
+                                   String userName,
+                                   String firstName,
+                                   String lastName,
+                                   String email,
+                                   String userPassword,
+                                   boolean enabledUser,
+                                   boolean errorIfUserExists) throws ConnectorException {
     KeycloakResult keycloakResult = new KeycloakResult();
-    keycloakResult.status= KeycloakResult.Status.CREATED;
+    keycloakResult.status = KeycloakResult.Status.CREATED;
 
     RealmResource realmResource = keycloak.realm(realm);
     UsersResource usersResource = realmResource.users();
@@ -236,32 +227,35 @@ public class KeycloakResult {
 
       long markerTime = System.currentTimeMillis();
       Response response = usersResource.create(user);
-      if (response != null && response.getStatus() == 409) {
+      int responseStatus = response == null ? -1 : response.getStatus();
+
+      if (responseStatus == 409) {
+        response.close();
         if (errorIfUserExists) {
           logger.error("UserName[{}] already exist in a Realm", userName);
           throw new ConnectorException(ERROR_USER_ALREADY_EXIST, "User[" + userName + "] already exist");
         } else {
           // search the UserId
           UserRepresentation userRepresentation = searchUserByUserName(realm, userName);
-          keycloakResult.status= KeycloakResult.Status.UPDATED;
-          keycloakResult.userId=userRepresentation.getId();
+          keycloakResult.status = KeycloakResult.Status.UPDATED;
+          keycloakResult.userId = userRepresentation.getId();
 
           updateUser(realm, keycloakResult.userId,
-              Map.of(UserProperties.FIRSTNAME, firstName,
-                  UserProperties.LASTNAME, lastName,
-                  UserProperties.ENABLED, enabledUser,
-                  UserProperties.EMAIL, email));
+              Map.of(UserProperties.FIRSTNAME, firstName, UserProperties.LASTNAME, lastName, UserProperties.ENABLED,
+                  enabledUser, UserProperties.EMAIL, email));
         }
       } else {
         keycloakResult.status = KeycloakResult.Status.CREATED;
         keycloakResult.userId = CreatedResponseUtil.getCreatedId(response);
       }
+      if (response != null)
+        response.close();
+
       setPasswordInternal(realm, keycloakResult.userId, userPassword);
 
       logger.info("UserName[{}] Realm[{}] created with/updated {} userId:[{}] status[{}] in {} ms", userName, realm,
-          keycloakResult.status.toString(),
-          keycloakResult.userId,
-          response.getStatus(), System.currentTimeMillis() - markerTime);
+          keycloakResult.status.toString(), keycloakResult.userId, responseStatus,
+          System.currentTimeMillis() - markerTime);
       return keycloakResult;
     } catch (WebApplicationException e) {
       logger.error("Error during creation UserName[{}] Realm[{}] : {}", userName, realm, e);
@@ -276,8 +270,9 @@ public class KeycloakResult {
    * @param realm        where is the suer
    * @param userId       userid
    * @param userPassword password to save
+   * @throws ConnectorException: ERROR_USER_SET_PASSWORD
    */
-  public void setPassword(String realm, String userId, String userPassword) {
+  public void setPassword(String realm, String userId, String userPassword) throws ConnectorException {
     long markerTime = System.currentTimeMillis();
     setPasswordInternal(realm, userId, userPassword);
     logger.info("UserId[{}] Realm[{}] Password created in {} ms", userId, realm,
@@ -291,23 +286,28 @@ public class KeycloakResult {
    * @param realm        where is the suer
    * @param userId       userid
    * @param userPassword password to save
+   * @throws ConnectorException: ERROR_USER_SET_PASSWORD
    */
-  public void setPasswordInternal(String realm, String userId, String userPassword) {
-    RealmResource realmResource = keycloak.realm(realm);
-    UsersResource usersResource = realmResource.users();
-    UserResource userResource = usersResource.get(userId);
+  public void setPasswordInternal(String realm, String userId, String userPassword) throws ConnectorException {
 
-    // Set password credential
-    CredentialRepresentation passwordCred = new CredentialRepresentation();
-    passwordCred.setTemporary(false);
-    passwordCred.setType(CredentialRepresentation.PASSWORD);
-    passwordCred.setValue(userPassword);
+    try {
+      RealmResource realmResource = keycloak.realm(realm);
+      UsersResource usersResource = realmResource.users();
+      UserResource userResource = usersResource.get(userId);
 
-    userResource.resetPassword(passwordCred);
+      // Set password credential
+      CredentialRepresentation passwordCred = new CredentialRepresentation();
+      passwordCred.setTemporary(false);
+      passwordCred.setType(CredentialRepresentation.PASSWORD);
+      passwordCred.setValue(userPassword);
 
+      userResource.resetPassword(passwordCred);
+    } catch (Exception e) {
+      logger.error("Error during setPassword UserId[{}] Realm[{}] : {}", userId, realm, e);
+      throw new ConnectorException(ERROR_USER_SET_PASSWORD, "UserId[" + userId + "] failed " + e.getMessage());
+
+    }
   }
-
-  public enum UserProperties {USERNAME, FIRSTNAME, LASTNAME, EMAIL, ENABLED}
 
   /**
    * UpdateUser
@@ -315,7 +315,7 @@ public class KeycloakResult {
    * @param realm            real where is the userId
    * @param userId           userId
    * @param updateProperties update properties
-   * @throws ConnectorException: ERROR_CANT_UPDATE_USERNAME, ERROR_UNKNONW_USER, ERROR_UPDATE_USER
+   * @throws ConnectorException: ERROR_CANT_UPDATE_USERNAME, ERROR_UNKNOWN_USER, ERROR_UPDATE_USER
    */
   public void updateUser(String realm, String userId, Map<UserProperties, Object> updateProperties)
       throws ConnectorException {
@@ -359,20 +359,25 @@ public class KeycloakResult {
   }
 
   /**
-   *
-   * @param realm realm where th user is
+   * @param realm  realm where th user is
    * @param userId user id
-   * @exception ConnectorException: ERROR_DELETE_USER
+   * @throws ConnectorException: ERROR_DELETE_USER, ERROR_UNKNOWN_USER
    */
-  public void deleteUser(String realm, String userId) throws ConnectorException{
+  public void deleteUser(String realm, String userId) throws ConnectorException {
     long markerTime = System.currentTimeMillis();
     try {
       RealmResource realmResource = keycloak.realm(realm);
       UsersResource usersResource = realmResource.users();
       Response response = usersResource.delete(userId);
       // Check if the user was created successfully
-      int responseStatus = response.getStatus();
-      response.close(); // Close the response to avoid resource leaks
+      int responseStatus = response == null ? -1 : response.getStatus();
+      if (response != null)
+        response.close(); // Close the response to avoid resource leaks
+      if (responseStatus == 404) {
+        logger.error("DeleteUser: UserId[{}] unknown in real[{}]", userId, realm);
+        throw new ConnectorException(KeycloakOperation.ERROR_UNKNOWN_USER,
+            "User[" + userId + "] unknown in real[" + realm + "]");
+      }
       logger.info("DeleteUser UserId[{}] Realm[{}] in {} ms", userId, realm, System.currentTimeMillis() - markerTime);
 
     } catch (Exception e) {
@@ -381,20 +386,15 @@ public class KeycloakResult {
     }
   }
 
-  /* ******************************************************************** */
-  /*                                                                      */
-  /*  roles operation                                                     */
-  /*                                                                      */
-  /* ******************************************************************** */
-
   /**
    * Update role: unassign all roles non desired, and assign desired role
    *
-   * @param realm realm where the user is
-   * @param userId user id
+   * @param realm        realm where the user is
+   * @param userId       user id
    * @param desiredRoles role to set
+   * @throws ConnectorException: ERROR_UNKNOWN_USER, ERROR_CANT_ACCESS_USER_ROLES, ERROR_UNKNOWN_ROLE, ERROR_DELETE_ROLE_USER, ERROR_ADD_ROLE_USER
    */
-  public void updateRoles(String realm, String userId, Set<String> desiredRoles) {
+  public void updateRoles(String realm, String userId, Set<String> desiredRoles) throws ConnectorException {
 
     RealmResource realmResource = keycloak.realm(realm);
     UsersResource usersResource = realmResource.users();
@@ -471,15 +471,15 @@ public class KeycloakResult {
 
   /* ******************************************************************** */
   /*                                                                      */
-  /*  Search                                                              */
+  /*  roles operation                                                     */
   /*                                                                      */
   /* ******************************************************************** */
 
   /**
-   * @param realm realm where to run the search
+   * @param realm  realm where to run the search
    * @param userId userid searched
    * @return the userRepresentation, else null
-   * @exception ConnectorException ERROR_SEARCH_USER
+   * @throws ConnectorException ERROR_SEARCH_USER
    */
   public UserRepresentation searchUserByUserId(String realm, String userId) throws ConnectorException {
     try {
@@ -493,6 +493,12 @@ public class KeycloakResult {
     }
   }
 
+  /* ******************************************************************** */
+  /*                                                                      */
+  /*  Search                                                              */
+  /*                                                                      */
+  /* ******************************************************************** */
+
   /**
    * userName is unique, only one use is expected
    *
@@ -504,7 +510,7 @@ public class KeycloakResult {
   public UserRepresentation searchUserByUserName(String realm, String userName) throws ConnectorException {
     try {
       List<UserRepresentation> usersList = searchUsersByCriteria(realm, userName, null, null, null, 0, 2);
-      if (! usersList.isEmpty())
+      if (!usersList.isEmpty())
         return usersList.get(0);
       return null;
 
@@ -523,6 +529,7 @@ public class KeycloakResult {
    * @param pageNumber start a 0
    * @param pageSize   number of record per page
    * @return the list of user representation found
+   * @throws ConnectorException: ERROR_SEARCH_USER
    */
   public List<UserRepresentation> searchUsersByCriteria(String realm,
                                                         String userName,
@@ -550,24 +557,24 @@ public class KeycloakResult {
     }
   }
 
+  public enum UserProperties {USERNAME, FIRSTNAME, LASTNAME, EMAIL, ENABLED}
+
   /* ******************************************************************** */
   /*                                                                      */
   /*  Private                                                             */
   /*                                                                      */
   /* ******************************************************************** */
 
-  /**
-   * Protect the value by obfuscated part of it
-   *
-   * @param secret value to protect
-   * @return part of the value
-   */
-  public static String getLogSecret(String secret) {
-    if (secret == null)
-      return "null";
-    if (secret.length() > 3)
-      return secret.substring(0, 3) + "****";
-    return "****";
+  /* ******************************************************************** */
+  /*                                                                      */
+  /*  users operation                                                     */
+  /*                                                                      */
+  /* ******************************************************************** */
+  public class KeycloakResult {
+    public String userId;
+    public Status status;
+
+    public enum Status {CREATED, UPDATED}
   }
 
 }

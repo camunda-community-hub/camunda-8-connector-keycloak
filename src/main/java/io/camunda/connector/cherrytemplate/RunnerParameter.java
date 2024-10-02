@@ -39,6 +39,14 @@ public class RunnerParameter {
   public List<WorkerParameterChoice> choiceList;
   public boolean visibleInTemplate = false;
   public Group group;
+  /* -------------------------------------------------------- */
+  /*                                                          */
+  /*  Attributes                                                */
+  /* to facilitate the parameter management, connector can    */
+  /* manage private attributes
+  /*                                                          */
+  /* -------------------------------------------------------- */
+  private Map<String, Object> attributes = new HashMap<>();
 
   public RunnerParameter() {
 
@@ -218,22 +226,15 @@ public class RunnerParameter {
     return level;
   }
 
-
-  /* -------------------------------------------------------- */
-  /*                                                          */
-  /*  Attributes                                                */
-  /* to facilitate the parameter management, connector can    */
-  /* manage private attributes
-  /*                                                          */
-  /* -------------------------------------------------------- */
-  private Map<String,Object> attributes= new HashMap<>();
   public void setAttribute(String name, Object value) {
 
     attributes.put(name, value);
   }
+
   public Object getAttribute(String name) {
     return attributes.get(name);
   }
+
   public int getAttributeInteger(String name, int defaultValue) {
     if (attributes.get(name) instanceof Integer attributInteger)
       return attributInteger.intValue();
@@ -292,7 +293,7 @@ public class RunnerParameter {
    */
   public RunnerParameter addCondition(String property, List<String> oneOf) {
     this.condition = property;
-    this.conditionOneOf = oneOf;
+    this.conditionOneOf = oneOf == null ? null : oneOf.stream().distinct().toList();
     return this;
   }
 
@@ -377,7 +378,7 @@ public class RunnerParameter {
 
     oneParameter.put(CherryInput.PARAMETER_MAP_VISIBLE_IN_TEMPLATE, visibleInTemplate);
 
-    logger.info("getMap:{}", oneParameter);
+    logger.debug("getMap:{}", oneParameter);
 
     return oneParameter;
   }
@@ -392,9 +393,13 @@ public class RunnerParameter {
 
   /**
    * Level on the parameter.
+   * REQUIRED: a value must be given. in the element-template, a Mandatory is placed
+   * OPTIONAL: value may be given, or not. In the element template, a checkbox is added, because in Modeler, not possible
+   * to leave a empty field for some type, so something has to be done
+   * FREE: not required, nothing is done in the element template, field will be visible
    */
   public enum Level {
-    REQUIRED, OPTIONAL
+    REQUIRED, OPTIONAL, FREE
   }
 
   /**

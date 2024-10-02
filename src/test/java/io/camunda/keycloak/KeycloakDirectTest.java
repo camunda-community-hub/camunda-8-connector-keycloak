@@ -297,10 +297,10 @@ public class KeycloakDirectTest {
       assert (result.userId.equals(sameResult.userId));
       UserRepresentation userRepresentation = keycloakOperation.searchUserByUserId(KEYCLOAK_REALM_CAMUNDA,
           result.userId);
-      Assertions.assertEquals("Walter.Bates".toLowerCase(),userRepresentation.getUsername() );
+      Assertions.assertEquals("Walter.Bates".toLowerCase(), userRepresentation.getUsername());
       Assertions.assertEquals("Walter2", userRepresentation.getFirstName());
       Assertions.assertEquals("Bates2", userRepresentation.getLastName());
-      Assertions.assertEquals("walter.bates@supercamunda.com", userRepresentation.getEmail() );
+      Assertions.assertEquals("walter.bates@supercamunda.com", userRepresentation.getEmail());
 
     } catch (ConnectorException ce) {
       assert (false);
@@ -308,8 +308,8 @@ public class KeycloakDirectTest {
 
     UserRepresentation userRepresentation = keycloakOperation.searchUserByUserId(KEYCLOAK_REALM_CAMUNDA, result.userId);
     Assertions.assertNotNull(userRepresentation);
-    Assertions.assertEquals("Walter.Bates".toLowerCase(), userRepresentation.getUsername().toLowerCase() );
-    Assertions.assertEquals(result.userId, userRepresentation.getId() );
+    Assertions.assertEquals("Walter.Bates".toLowerCase(), userRepresentation.getUsername().toLowerCase());
+    Assertions.assertEquals(result.userId, userRepresentation.getId());
 
     keycloakOperation.deleteUser(KEYCLOAK_REALM_CAMUNDA, result.userId);
 

@@ -1,0 +1,1182 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "Keycloak function",
+  "id": "io.camunda.connector.keycloak.KeycloakFunction",
+  "description": "Keycloak operation (add/remove user",
+  "documentationRef": "https://docs.camunda.io/docs/components/modeler/web-modeler/connectors/available-connectors/template/",
+  "icon": {
+    "contents": "data:image/svg+xml,%3C?xml version\u003d\u00271.0\u0027 encoding\u003d\u0027UTF-8\u0027 standalone\u003d\u0027no\u0027?%3E%3Csvg   width\u003d\u002717.999758\u0027   height\u003d\u002716.226999\u0027   viewBox\u003d\u00270 0 4.7623956 4.2933293\u0027   version\u003d\u00271.1\u0027   id\u003d\u0027svg14\u0027   xmlns\u003d\u0027http://www.w3.org/2000/svg\u0027   xmlns:svg\u003d\u0027http://www.w3.org/2000/svg\u0027%3E  %3Cdefs     id\u003d\u0027defs14\u0027 /%3E  %3Cpath     d\u003d\u0027M 0.61762502,1.0508277 1.2268303,-5.736842e-4 3.6800646,-0.001 4.2860725,1.0610592 4.2868186,3.1853909 3.6802777,4.2465975 1.2276829,4.2474501 0.61144344,3.1853909 Z\u0027     style\u003d\u0027display:inline;fill:%234d4d4d;fill-opacity:1;stroke-width:0.028199\u0027     id\u003d\u0027path1\u0027 /%3E  %3Cpath     d\u003d\u0027M 0.61144344,3.1850712 H 1.7172001 L 1.1098066,2.1149119 1.6036935,1.0510408 0.61762502,1.0508277 0,2.1235448\u0027     style\u003d\u0027fill:%23ededed;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path2\u0027 /%3E  %3Cpath     d\u003d\u0027M 2.0524974,3.1850712 H 2.860579 L 3.5752975,2.1434751 2.8730488,1.0610592 H 1.922258 L 1.3496093,2.1070251 Z\u0027     style\u003d\u0027fill:%23e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path3\u0027 /%3E  %3Cpath     d\u003d\u0027M 0,2.1234382 0.61155002,3.1853909 H 1.7172001 l -0.600679,-1.058329 z\u0027     style\u003d\u0027fill:%23acacac;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path4\u0027 /%3E  %3Cpath     d\u003d\u0027M 1.3614395,2.1236514 2.0524974,3.1854975 H 2.860579 L 3.5641067,2.1240777 Z\u0027     style\u003d\u0027fill:%239e9e9e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path5\u0027 /%3E  %3Cpath     d\u003d\u0027M 1.6351343,2.1243974 1.4264527,2.1850409 1.226404,2.1240777 2.0435448,0.7078566 2.2479632,1.0612724\u0027     style\u003d\u0027fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path6\u0027 /%3E  %3Cpath     d\u003d\u0027M 2.2472172,3.1851777 2.043758,3.5402988 1.5009514,2.9555001 1.2259777,2.124504 v -4.263e-4 h 0.40905\u0027     style\u003d\u0027fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path7\u0027 /%3E  %3Cpath     d\u003d\u0027m 1.226404,2.1240777 h -3.198e-4 v 3.197e-4 L 1.0216658,2.4784527 0.81650134,2.1259961 1.0245435,1.7651198 1.6350277,0.7078566 h 0.4086237\u0027     style\u003d\u0027fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path8\u0027 /%3E  %3Cpath     d\u003d\u0027M 3.4750067,3.1850712 H 4.7124949 L 4.7117488,1.0609527 H 3.4749001 Z\u0027     style\u003d\u0027fill:%23d4d4d4;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path9\u0027 /%3E  %3Cpath     d\u003d\u0027m 3.4750067,2.1270619 v 1.058329 h 1.23525 v -1.058329 z\u0027     style\u003d\u0027fill:%23919191;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path10\u0027 /%3E  %3Cpath     d\u003d\u0027M 2.0438645,3.5406185 H 1.6350277 L 1.0216658,2.4784527 1.2260842,2.124504 Z\u0027     style\u003d\u0027fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path11\u0027 /%3E  %3Cpath     d\u003d\u0027M 3.6788922,2.1240777 2.8615382,3.5404054 C 2.7864001,3.4299896 2.6576527,3.1853909 2.6576527,3.1853909 L 3.2708014,2.1239711 Z\u0027     style\u003d\u0027fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path12\u0027 /%3E  %3Cpath     d\u003d\u0027M 3.2698422,3.5404054 2.8615382,3.5402988 3.6789988,2.1240777 3.8833106,1.7705553 4.0880488,2.126529 M 3.6788922,2.1240777 H 3.270908 L 2.6575461,1.0611658 2.860579,0.70796318 3.3570238,1.3391237 Z\u0027     style\u003d\u0027fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path13\u0027 /%3E  %3Cpath     d\u003d\u0027m 3.8832041,1.770129 v 3.197e-4 L 3.6788922,2.1240777 2.8606856,0.70806976 3.2700554,0.70828292 Z\u0027     style\u003d\u0027fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487\u0027     id\u003d\u0027path14\u0027 /%3E%3C/svg%3E"
+  },
+  "category": {
+    "name": "connectors",
+    "id": "connectors"
+  },
+  "appliesTo": [
+    "bpmn:ServiceTask"
+  ],
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "groups": [
+    {
+      "label": "Keycloak connection",
+      "id": "keycloak_connection"
+    },
+    {
+      "label": "Parameters",
+      "id": "parameters"
+    },
+    {
+      "label": "Input",
+      "id": "Input"
+    },
+    {
+      "label": "Output",
+      "id": "Output"
+    }
+  ],
+  "properties": [
+    {
+      "value": "c-keycloak-function",
+      "type": "Hidden",
+      "binding": {
+        "type": "zeebe:taskDefinition:type"
+      }
+    },
+    {
+      "value": "result",
+      "type": "Hidden",
+      "binding": {
+        "key": "resultVariable",
+        "type": "zeebe:taskHeader"
+      }
+    },
+    {
+      "description": "Choose the function to execute",
+      "binding": {
+        "name": "keycloakFunction",
+        "type": "zeebe:input"
+      },
+      "id": "keycloakFunction",
+      "label": "Keycloak Function",
+      "choices": [
+        {
+          "name": "createUser",
+          "value": "create-user"
+        },
+        {
+          "name": "DeleteUser",
+          "value": "delete-user"
+        },
+        {
+          "name": "searchUser",
+          "value": "search-users"
+        },
+        {
+          "name": "updateUser",
+          "value": "update-user"
+        }
+      ],
+      "type": "Dropdown",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "Input"
+    },
+    {
+      "description": "Connection to Keycloak engine",
+      "binding": {
+        "name": "connectionType",
+        "type": "zeebe:input"
+      },
+      "id": "connectionType",
+      "label": "Keycloack Connection ",
+      "choices": [
+        {
+          "name": "Admin User",
+          "value": "USER"
+        },
+        {
+          "name": "ClientId/Secret",
+          "value": "CLIENTID"
+        },
+        {
+          "name": "KeycloakUrl",
+          "value": "CONNECTIONURL"
+        }
+      ],
+      "type": "Dropdown",
+      "value": "USER",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "keycloak_connection"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "USER",
+          "CLIENTID"
+        ],
+        "property": "connectionType"
+      },
+      "description": "URL to connect the Keycloak server",
+      "feel": "optional",
+      "binding": {
+        "name": "serverUrl",
+        "type": "zeebe:input"
+      },
+      "id": "serverUrl",
+      "label": "Server Url",
+      "type": "String",
+      "value": "http://localhost:18080/auth",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "keycloak_connection"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "USER",
+          "CLIENTID"
+        ],
+        "property": "connectionType"
+      },
+      "description": "Realm to connect Keycloak. This is NOT the realm created by Identity ",
+      "feel": "optional",
+      "binding": {
+        "name": "connectionRealm",
+        "type": "zeebe:input"
+      },
+      "id": "connectionRealm",
+      "label": "connection Realm",
+      "type": "String",
+      "value": "master",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "keycloak_connection"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "USER",
+          "CLIENTID"
+        ],
+        "property": "connectionType"
+      },
+      "description": "Client Id used for the connection, to retrieve permission",
+      "feel": "optional",
+      "binding": {
+        "name": "clientId",
+        "type": "zeebe:input"
+      },
+      "id": "clientId",
+      "label": "Client Id",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "keycloak_connection"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "CLIENTID"
+        ],
+        "property": "connectionType"
+      },
+      "description": "Connection based on Client: the secret of this client",
+      "feel": "optional",
+      "binding": {
+        "name": "clientSecret",
+        "type": "zeebe:input"
+      },
+      "id": "clientSecret",
+      "label": "Client Secret",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "keycloak_connection"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "USER"
+        ],
+        "property": "connectionType"
+      },
+      "description": "Connection based on User : the admin user",
+      "feel": "optional",
+      "binding": {
+        "name": "adminUserName",
+        "type": "zeebe:input"
+      },
+      "id": "adminUserName",
+      "label": "Admin User Name",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "keycloak_connection"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "USER"
+        ],
+        "property": "connectionType"
+      },
+      "description": "Connection based on User: the password",
+      "feel": "optional",
+      "binding": {
+        "name": "adminUserPassword",
+        "type": "zeebe:input"
+      },
+      "id": "adminUserPassword",
+      "label": "Admin User Password",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "keycloak_connection"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "CONNECTIONURL"
+        ],
+        "property": "connectionType"
+      },
+      "description": "Check documentation: USERID;serverUrl;realm;clientid;adminusername;adminpassword for example",
+      "feel": "optional",
+      "binding": {
+        "name": "keycloakConnectionUrl",
+        "type": "zeebe:input"
+      },
+      "id": "keycloakConnectionUrl",
+      "label": "Keycloak Connection Url",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "keycloak_connection"
+    },
+    {
+      "description": "The user is created in a realm",
+      "feel": "optional",
+      "binding": {
+        "name": "userRealm",
+        "type": "zeebe:input"
+      },
+      "id": "userRealm",
+      "label": "User realm",
+      "type": "String",
+      "value": "camunda-platform",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "The user name must be unique in a realm\u0027s Keycloak",
+      "feel": "optional",
+      "binding": {
+        "name": "userName",
+        "type": "zeebe:input"
+      },
+      "id": "userName",
+      "label": "User Name",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user",
+          "update-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "First name of the user",
+      "binding": {
+        "name": "userFirstName_optional",
+        "type": "zeebe:input"
+      },
+      "id": "userFirstName_optional",
+      "label": "Provide First name?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "userFirstName_optional"
+      },
+      "description": "First name of the user",
+      "feel": "optional",
+      "binding": {
+        "name": "userFirstName",
+        "type": "zeebe:input"
+      },
+      "id": "userFirstName",
+      "label": "First name",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user",
+          "update-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Last name of the user",
+      "binding": {
+        "name": "userLastName_optional",
+        "type": "zeebe:input"
+      },
+      "id": "userLastName_optional",
+      "label": "Provide Last name?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "userLastName_optional"
+      },
+      "description": "Last name of the user",
+      "feel": "optional",
+      "binding": {
+        "name": "userLastName",
+        "type": "zeebe:input"
+      },
+      "id": "userLastName",
+      "label": "Last name",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user",
+          "update-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Email of the user",
+      "binding": {
+        "name": "userEmail_optional",
+        "type": "zeebe:input"
+      },
+      "id": "userEmail_optional",
+      "label": "Provide Email?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "userEmail_optional"
+      },
+      "description": "Email of the user",
+      "feel": "optional",
+      "binding": {
+        "name": "userEmail",
+        "type": "zeebe:input"
+      },
+      "id": "userEmail",
+      "label": "Email",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user",
+          "update-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Password of the user, if password is manage by Keycloak",
+      "binding": {
+        "name": "userPassword_optional",
+        "type": "zeebe:input"
+      },
+      "id": "userPassword_optional",
+      "label": "Provide Password?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "userPassword_optional"
+      },
+      "description": "Password of the user, if password is manage by Keycloak",
+      "feel": "optional",
+      "binding": {
+        "name": "userPassword",
+        "type": "zeebe:input"
+      },
+      "id": "userPassword",
+      "label": "Password",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user",
+          "update-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "User enabled. Default is false",
+      "binding": {
+        "name": "userEnabled",
+        "type": "zeebe:input"
+      },
+      "id": "userEnabled",
+      "label": "User enabled",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "type": "Dropdown",
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "If true, an BPMN error is thrown if the user already exists- else it\u0027s updated except the userName",
+      "binding": {
+        "name": "errorIfUserExists",
+        "type": "zeebe:input"
+      },
+      "id": "errorIfUserExists",
+      "label": "Error if user already exist",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "type": "Dropdown",
+      "value": "true",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user",
+          "update-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "User roles assigned to the user",
+      "binding": {
+        "name": "userRoles_optional",
+        "type": "zeebe:input"
+      },
+      "id": "userRoles_optional",
+      "label": "Provide User roles?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "userRoles_optional"
+      },
+      "description": "User roles assigned to the user",
+      "feel": "optional",
+      "binding": {
+        "name": "userRoles",
+        "type": "zeebe:input"
+      },
+      "id": "userRoles",
+      "label": "User roles",
+      "type": "String",
+      "value": "Operate,Tasklist,Optimize",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "delete-user",
+          "update-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "User Id in Keycloak, to get the user in the Realm",
+      "feel": "optional",
+      "binding": {
+        "name": "userId",
+        "type": "zeebe:input"
+      },
+      "id": "userId",
+      "label": "User Id",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Search by User Id",
+      "binding": {
+        "name": "searchByUserId_optional",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUserId_optional",
+      "label": "Provide Search by User Id?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "searchByUserId_optional"
+      },
+      "description": "Search by User Id",
+      "feel": "optional",
+      "binding": {
+        "name": "searchByUserId",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUserId",
+      "label": "Search by User Id",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Search by the user name",
+      "binding": {
+        "name": "searchByUserName_optional",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUserName_optional",
+      "label": "Provide Search by User Name?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "searchByUserName_optional"
+      },
+      "description": "Search by the user name",
+      "feel": "optional",
+      "binding": {
+        "name": "searchByUserName",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUserName",
+      "label": "Search by User Name",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Search by First name of the user",
+      "binding": {
+        "name": "searchByUserFirstName_optional",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUserFirstName_optional",
+      "label": "Provide Search by First name?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "searchByUserFirstName_optional"
+      },
+      "description": "Search by First name of the user",
+      "feel": "optional",
+      "binding": {
+        "name": "searchByUserFirstName",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUserFirstName",
+      "label": "Search by First name",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Search by Last name of the user",
+      "binding": {
+        "name": "searchByUserLastName_optional",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUserLastName_optional",
+      "label": "Provide Search by Last name?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "searchByUserLastName_optional"
+      },
+      "description": "Search by Last name of the user",
+      "feel": "optional",
+      "binding": {
+        "name": "searchByUserLastName",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUserLastName",
+      "label": "Search by Last name",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Search by Email of the user",
+      "binding": {
+        "name": "searchByUUserEmail_optional",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUUserEmail_optional",
+      "label": "Provide Search by Email?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "searchByUUserEmail_optional"
+      },
+      "description": "Search by Email of the user",
+      "feel": "optional",
+      "binding": {
+        "name": "searchByUUserEmail",
+        "type": "zeebe:input"
+      },
+      "id": "searchByUUserEmail",
+      "label": "Search by Email",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Page to start to return the result (start at 0)",
+      "binding": {
+        "name": "pageNumber_optional",
+        "type": "zeebe:input"
+      },
+      "id": "pageNumber_optional",
+      "label": "Provide Page number?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "pageNumber_optional"
+      },
+      "description": "Page to start to return the result (start at 0)",
+      "feel": "optional",
+      "binding": {
+        "name": "pageNumber",
+        "type": "zeebe:input"
+      },
+      "id": "pageNumber",
+      "label": "Page number",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Number of records per page",
+      "binding": {
+        "name": "pageSize_optional",
+        "type": "zeebe:input"
+      },
+      "id": "pageSize_optional",
+      "label": "Provide Page size?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "pageSize_optional"
+      },
+      "description": "Number of records per page",
+      "feel": "optional",
+      "binding": {
+        "name": "pageSize",
+        "type": "zeebe:input"
+      },
+      "id": "pageSize",
+      "label": "Page size",
+      "type": "String",
+      "value": "",
+      "group": "parameters"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user",
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "User Id created by keycloak",
+      "binding": {
+        "name": "userId_optional",
+        "type": "zeebe:input"
+      },
+      "id": "userId_optional",
+      "label": "Saved User Id?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "userId_optional"
+      },
+      "description": "User Id created by keycloak",
+      "feel": "optional",
+      "binding": {
+        "source": "\u003d result.userId",
+        "type": "zeebe:output"
+      },
+      "id": "userId",
+      "label": "User Id",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user",
+          "delete-user",
+          "update-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Status of operation",
+      "binding": {
+        "name": "status_optional",
+        "type": "zeebe:input"
+      },
+      "id": "status_optional",
+      "label": "Saved Status?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "status_optional"
+      },
+      "description": "Status of operation",
+      "feel": "optional",
+      "binding": {
+        "source": "\u003d result.status",
+        "type": "zeebe:output"
+      },
+      "id": "status",
+      "label": "Status",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "create-user",
+          "delete-user",
+          "update-user"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Date when the operation is done in Keycloak",
+      "binding": {
+        "name": "dateOperation_optional",
+        "type": "zeebe:input"
+      },
+      "id": "dateOperation_optional",
+      "label": "Saved Date of operation?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "dateOperation_optional"
+      },
+      "description": "Date when the operation is done in Keycloak",
+      "feel": "optional",
+      "binding": {
+        "source": "\u003d result.dateOperation",
+        "type": "zeebe:output"
+      },
+      "id": "dateOperation",
+      "label": "Date of operation",
+      "type": "String",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "List of users found by the search",
+      "binding": {
+        "name": "listUsers_optional",
+        "type": "zeebe:input"
+      },
+      "id": "listUsers_optional",
+      "label": "Saved List Users?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "listUsers_optional"
+      },
+      "description": "List of users found by the search",
+      "feel": "optional",
+      "binding": {
+        "source": "\u003d result.listUsers",
+        "type": "zeebe:output"
+      },
+      "id": "listUsers",
+      "label": "List Users",
+      "type": "String",
+      "value": "",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "oneOf": [
+          "search-users"
+        ],
+        "property": "keycloakFunction"
+      },
+      "description": "Keycloak user",
+      "binding": {
+        "name": "user_optional",
+        "type": "zeebe:input"
+      },
+      "id": "user_optional",
+      "label": "Saved User?",
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Yes",
+          "value": "true"
+        },
+        {
+          "name": "No",
+          "value": "false"
+        }
+      ],
+      "value": "false",
+      "group": "Output"
+    },
+    {
+      "condition": {
+        "equals": "true",
+        "property": "user_optional"
+      },
+      "description": "Keycloak user",
+      "feel": "optional",
+      "binding": {
+        "source": "\u003d result.user",
+        "type": "zeebe:output"
+      },
+      "id": "user",
+      "label": "User",
+      "type": "String",
+      "constraints": {
+        "notEmpty": true
+      },
+      "group": "Output"
+    }
+  ]
+}

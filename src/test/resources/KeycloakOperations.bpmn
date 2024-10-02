@@ -3,22 +3,17 @@
   <bpmn:collaboration id="Collaboration_1v5nw3b">
     <bpmn:participant id="Participant_0edqg9w" name="KeycloakOperation" processRef="KeycloakOperation" />
     <bpmn:participant id="Participant_0hhh09x" name="Keycloak" />
-    <bpmn:messageFlow id="Flow_1pociqz" sourceRef="Activity_UploadFile" targetRef="Participant_0hhh09x" />
-    <bpmn:messageFlow id="Flow_04z4w3o" sourceRef="Participant_0hhh09x" targetRef="Activity_19840r4" />
-    <bpmn:messageFlow id="Flow_04vas00" sourceRef="Activity_1vd8ph6" targetRef="Participant_0hhh09x" />
-    <bpmn:messageFlow id="Flow_12zmx2l" sourceRef="Activity_1knweah" targetRef="Participant_0hhh09x" />
-    <bpmn:messageFlow id="Flow_0pw5cfv" sourceRef="Activity_0l41yt6" targetRef="Participant_0hhh09x" />
-    <bpmn:messageFlow id="Flow_177nacg" sourceRef="Activity_1d3l5n4" targetRef="Participant_0hhh09x" />
+    <bpmn:messageFlow id="Flow_1pociqz" sourceRef="Activity_CreateWalterBates" targetRef="Participant_0hhh09x" />
+    <bpmn:messageFlow id="Flow_04z4w3o" sourceRef="Participant_0hhh09x" targetRef="SearchWalterBates" />
+    <bpmn:messageFlow id="Flow_04vas00" sourceRef="UpdateWalterBates" targetRef="Participant_0hhh09x" />
+    <bpmn:messageFlow id="Flow_12zmx2l" sourceRef="DeleteWalterBates" targetRef="Participant_0hhh09x" />
+    <bpmn:messageFlow id="Flow_0pw5cfv" sourceRef="CreateWilliamsBates" targetRef="Participant_0hhh09x" />
+    <bpmn:messageFlow id="Flow_177nacg" sourceRef="SearchBates" targetRef="Participant_0hhh09x" />
   </bpmn:collaboration>
   <bpmn:process id="KeycloakOperation" name="KeycloakOperation" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="Conversion">
       <bpmn:outgoing>Flow_1gsvooc</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1gsvooc" sourceRef="StartEvent_1" targetRef="Activity_09nx1ov" />
-    <bpmn:sequenceFlow id="Flow_1p8k90c" sourceRef="Activity_ReviewDocument" targetRef="Activity_19840r4" />
-    <bpmn:sequenceFlow id="Flow_0j2cgtr" sourceRef="Activity_09nx1ov" targetRef="Activity_UploadFile" />
-    <bpmn:sequenceFlow id="Flow_08klpi3" sourceRef="Activity_UploadFile" targetRef="Activity_0l41yt6" />
-    <bpmn:sequenceFlow id="Flow_1ozq1f5" sourceRef="Event_1s7c15t" targetRef="Activity_19840r4" />
     <bpmn:scriptTask id="Activity_09nx1ov" name="Set Keyckoak Info">
       <bpmn:extensionElements>
         <zeebe:script expression="={&#10;  &#34;url&#34;: &#34;http://localhost:18080/auth&#34;,&#10;  &#34;adminUser&#34;: &#34;admin&#34;,&#10;  &#34;clientId&#34; : &#34;admin-cli&#34;,&#10;  &#34;adminPassword&#34; : &#34;admin&#34; ,&#10;  &#34;connectinRealm&#34; : &#34;master&#34;&#10;}" resultVariable="keycloakConnection" />
@@ -26,179 +21,197 @@
       <bpmn:incoming>Flow_1gsvooc</bpmn:incoming>
       <bpmn:outgoing>Flow_0j2cgtr</bpmn:outgoing>
     </bpmn:scriptTask>
-    <bpmn:serviceTask id="Activity_UploadFile" name="Create user Walter.Bates">
+    <bpmn:serviceTask id="Activity_CreateWalterBates" name="Create user Walter.Bates" zeebe:modelerTemplate="io.camunda.connector.keycloak.KeycloakFunction" zeebe:modelerTemplateIcon="data:image/svg+xml,%3C?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; standalone=&#39;no&#39;?%3E%3Csvg   width=&#39;17.999758&#39;   height=&#39;16.226999&#39;   viewBox=&#39;0 0 4.7623956 4.2933293&#39;   version=&#39;1.1&#39;   id=&#39;svg14&#39;   xmlns=&#39;http://www.w3.org/2000/svg&#39;   xmlns:svg=&#39;http://www.w3.org/2000/svg&#39;%3E  %3Cdefs     id=&#39;defs14&#39; /%3E  %3Cpath     d=&#39;M 0.61762502,1.0508277 1.2268303,-5.736842e-4 3.6800646,-0.001 4.2860725,1.0610592 4.2868186,3.1853909 3.6802777,4.2465975 1.2276829,4.2474501 0.61144344,3.1853909 Z&#39;     style=&#39;display:inline;fill:%234d4d4d;fill-opacity:1;stroke-width:0.028199&#39;     id=&#39;path1&#39; /%3E  %3Cpath     d=&#39;M 0.61144344,3.1850712 H 1.7172001 L 1.1098066,2.1149119 1.6036935,1.0510408 0.61762502,1.0508277 0,2.1235448&#39;     style=&#39;fill:%23ededed;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path2&#39; /%3E  %3Cpath     d=&#39;M 2.0524974,3.1850712 H 2.860579 L 3.5752975,2.1434751 2.8730488,1.0610592 H 1.922258 L 1.3496093,2.1070251 Z&#39;     style=&#39;fill:%23e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path3&#39; /%3E  %3Cpath     d=&#39;M 0,2.1234382 0.61155002,3.1853909 H 1.7172001 l -0.600679,-1.058329 z&#39;     style=&#39;fill:%23acacac;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path4&#39; /%3E  %3Cpath     d=&#39;M 1.3614395,2.1236514 2.0524974,3.1854975 H 2.860579 L 3.5641067,2.1240777 Z&#39;     style=&#39;fill:%239e9e9e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path5&#39; /%3E  %3Cpath     d=&#39;M 1.6351343,2.1243974 1.4264527,2.1850409 1.226404,2.1240777 2.0435448,0.7078566 2.2479632,1.0612724&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path6&#39; /%3E  %3Cpath     d=&#39;M 2.2472172,3.1851777 2.043758,3.5402988 1.5009514,2.9555001 1.2259777,2.124504 v -4.263e-4 h 0.40905&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path7&#39; /%3E  %3Cpath     d=&#39;m 1.226404,2.1240777 h -3.198e-4 v 3.197e-4 L 1.0216658,2.4784527 0.81650134,2.1259961 1.0245435,1.7651198 1.6350277,0.7078566 h 0.4086237&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path8&#39; /%3E  %3Cpath     d=&#39;M 3.4750067,3.1850712 H 4.7124949 L 4.7117488,1.0609527 H 3.4749001 Z&#39;     style=&#39;fill:%23d4d4d4;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path9&#39; /%3E  %3Cpath     d=&#39;m 3.4750067,2.1270619 v 1.058329 h 1.23525 v -1.058329 z&#39;     style=&#39;fill:%23919191;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path10&#39; /%3E  %3Cpath     d=&#39;M 2.0438645,3.5406185 H 1.6350277 L 1.0216658,2.4784527 1.2260842,2.124504 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path11&#39; /%3E  %3Cpath     d=&#39;M 3.6788922,2.1240777 2.8615382,3.5404054 C 2.7864001,3.4299896 2.6576527,3.1853909 2.6576527,3.1853909 L 3.2708014,2.1239711 Z&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path12&#39; /%3E  %3Cpath     d=&#39;M 3.2698422,3.5404054 2.8615382,3.5402988 3.6789988,2.1240777 3.8833106,1.7705553 4.0880488,2.126529 M 3.6788922,2.1240777 H 3.270908 L 2.6575461,1.0611658 2.860579,0.70796318 3.3570238,1.3391237 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path13&#39; /%3E  %3Cpath     d=&#39;m 3.8832041,1.770129 v 3.197e-4 L 3.6788922,2.1240777 2.8606856,0.70806976 3.2700554,0.70828292 Z&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path14&#39; /%3E%3C/svg%3E">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-keycloak-function" />
         <zeebe:taskHeaders>
           <zeebe:header key="resultVariable" value="result" />
-          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
         <zeebe:ioMapping>
+          <zeebe:input source="create-user" target="keycloakFunction" />
+          <zeebe:input source="USER" target="connectionType" />
           <zeebe:input source="=keycloakConnection.url" target="serverUrl" />
           <zeebe:input source="=keycloakConnection.connectinRealm" target="connectionRealm" />
           <zeebe:input source="=keycloakConnection.clientId" target="clientId" />
-          <zeebe:input source="=keycloakConnection.adminUser" target="adminUsername" />
+          <zeebe:input source="=keycloakConnection.adminUser" target="adminUserName" />
           <zeebe:input source="=keycloakConnection.adminPassword" target="adminUserPassword" />
-          <zeebe:input source="=&#34;Walter.Bates&#34;" target="userName" />
-          <zeebe:input source="=&#34;Walter&#34;" target="userFirstName" />
-          <zeebe:input source="=&#34;Bates&#34;" target="userLastName" />
-          <zeebe:input source="=&#34;walter.bates@camunda.com&#34;" target="userEmail" />
-          <zeebe:input source="=&#34;bpm&#34;" target="userPassword" />
-          <zeebe:input source="=&#34;create-user&#34;" target="keycloakFunction" />
-          <zeebe:input source="=true" target="userEnabled" />
-          <zeebe:input source="=&#34;bpm&#34;" target="userPassword" />
-          <zeebe:input source="=&#34;Operate,Tasklist,Optimize&#34;" target="userRoles" />
-          <zeebe:input source="=&#34;USER&#34;" target="connectionType" />
-          <zeebe:input source="=FALSE" target="errorIfUserExists" />
-          <zeebe:output source="=result.userId" target="userWalterBatesId" />
+          <zeebe:input source="camunda-platform" target="userRealm" />
+          <zeebe:input source="Walter.Bates" target="userName" />
+          <zeebe:input source="true" target="userFirstName_optional" />
+          <zeebe:input source="Walter" target="userFirstName" />
+          <zeebe:input source="true" target="userLastName_optional" />
+          <zeebe:input source="Bates" target="userLastName" />
+          <zeebe:input source="true" target="userEmail_optional" />
+          <zeebe:input source="walter.bates@camunda.com" target="userEmail" />
+          <zeebe:input source="true" target="userPassword_optional" />
+          <zeebe:input source="bpm" target="userPassword" />
+          <zeebe:input source="true" target="userEnabled" />
+          <zeebe:input source="true" target="errorIfUserExists" />
+          <zeebe:input source="true" target="userRoles_optional" />
+          <zeebe:input source="Operate,Tasklist,Optimize" target="userRoles" />
+          <zeebe:input source="true" target="userId_optional" />
+          <zeebe:input source="false" target="status_optional" />
+          <zeebe:input source="false" target="dateOperation_optional" />
+          <zeebe:output source="= result.userId" target="userWalterBatesId" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0j2cgtr</bpmn:incoming>
       <bpmn:outgoing>Flow_08klpi3</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0yw8jpx" sourceRef="Activity_19840r4" targetRef="Activity_1d3l5n4" />
-    <bpmn:sequenceFlow id="Flow_1oae2qp" sourceRef="Activity_0m6pb5k" targetRef="Activity_1vd8ph6" />
-    <bpmn:sequenceFlow id="Flow_1apcmsx" sourceRef="Event_0dxb40n" targetRef="Activity_1vd8ph6" />
-    <bpmn:sequenceFlow id="Flow_0gsjem7" sourceRef="Activity_1vd8ph6" targetRef="Activity_0vgzdqc" />
-    <bpmn:sequenceFlow id="Flow_03qsr81" sourceRef="Activity_0vgzdqc" targetRef="Activity_1knweah" />
-    <bpmn:sequenceFlow id="Flow_0oijbog" sourceRef="Activity_1knweah" targetRef="Activity_1re6691" />
-    <bpmn:sequenceFlow id="Flow_156vlkm" sourceRef="Event_1yyjbgg" targetRef="Activity_1knweah" />
     <bpmn:userTask id="Activity_ReviewDocument" name="Check active user">
       <bpmn:incoming>Flow_15j7l9g</bpmn:incoming>
       <bpmn:outgoing>Flow_1p8k90c</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_19840r4" name="search Walter.Bates">
+    <bpmn:serviceTask id="SearchWalterBates" name="search Walter.Bates" zeebe:modelerTemplate="io.camunda.connector.keycloak.KeycloakFunction" zeebe:modelerTemplateIcon="data:image/svg+xml,%3C?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; standalone=&#39;no&#39;?%3E%3Csvg   width=&#39;17.999758&#39;   height=&#39;16.226999&#39;   viewBox=&#39;0 0 4.7623956 4.2933293&#39;   version=&#39;1.1&#39;   id=&#39;svg14&#39;   xmlns=&#39;http://www.w3.org/2000/svg&#39;   xmlns:svg=&#39;http://www.w3.org/2000/svg&#39;%3E  %3Cdefs     id=&#39;defs14&#39; /%3E  %3Cpath     d=&#39;M 0.61762502,1.0508277 1.2268303,-5.736842e-4 3.6800646,-0.001 4.2860725,1.0610592 4.2868186,3.1853909 3.6802777,4.2465975 1.2276829,4.2474501 0.61144344,3.1853909 Z&#39;     style=&#39;display:inline;fill:%234d4d4d;fill-opacity:1;stroke-width:0.028199&#39;     id=&#39;path1&#39; /%3E  %3Cpath     d=&#39;M 0.61144344,3.1850712 H 1.7172001 L 1.1098066,2.1149119 1.6036935,1.0510408 0.61762502,1.0508277 0,2.1235448&#39;     style=&#39;fill:%23ededed;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path2&#39; /%3E  %3Cpath     d=&#39;M 2.0524974,3.1850712 H 2.860579 L 3.5752975,2.1434751 2.8730488,1.0610592 H 1.922258 L 1.3496093,2.1070251 Z&#39;     style=&#39;fill:%23e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path3&#39; /%3E  %3Cpath     d=&#39;M 0,2.1234382 0.61155002,3.1853909 H 1.7172001 l -0.600679,-1.058329 z&#39;     style=&#39;fill:%23acacac;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path4&#39; /%3E  %3Cpath     d=&#39;M 1.3614395,2.1236514 2.0524974,3.1854975 H 2.860579 L 3.5641067,2.1240777 Z&#39;     style=&#39;fill:%239e9e9e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path5&#39; /%3E  %3Cpath     d=&#39;M 1.6351343,2.1243974 1.4264527,2.1850409 1.226404,2.1240777 2.0435448,0.7078566 2.2479632,1.0612724&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path6&#39; /%3E  %3Cpath     d=&#39;M 2.2472172,3.1851777 2.043758,3.5402988 1.5009514,2.9555001 1.2259777,2.124504 v -4.263e-4 h 0.40905&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path7&#39; /%3E  %3Cpath     d=&#39;m 1.226404,2.1240777 h -3.198e-4 v 3.197e-4 L 1.0216658,2.4784527 0.81650134,2.1259961 1.0245435,1.7651198 1.6350277,0.7078566 h 0.4086237&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path8&#39; /%3E  %3Cpath     d=&#39;M 3.4750067,3.1850712 H 4.7124949 L 4.7117488,1.0609527 H 3.4749001 Z&#39;     style=&#39;fill:%23d4d4d4;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path9&#39; /%3E  %3Cpath     d=&#39;m 3.4750067,2.1270619 v 1.058329 h 1.23525 v -1.058329 z&#39;     style=&#39;fill:%23919191;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path10&#39; /%3E  %3Cpath     d=&#39;M 2.0438645,3.5406185 H 1.6350277 L 1.0216658,2.4784527 1.2260842,2.124504 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path11&#39; /%3E  %3Cpath     d=&#39;M 3.6788922,2.1240777 2.8615382,3.5404054 C 2.7864001,3.4299896 2.6576527,3.1853909 2.6576527,3.1853909 L 3.2708014,2.1239711 Z&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path12&#39; /%3E  %3Cpath     d=&#39;M 3.2698422,3.5404054 2.8615382,3.5402988 3.6789988,2.1240777 3.8833106,1.7705553 4.0880488,2.126529 M 3.6788922,2.1240777 H 3.270908 L 2.6575461,1.0611658 2.860579,0.70796318 3.3570238,1.3391237 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path13&#39; /%3E  %3Cpath     d=&#39;m 3.8832041,1.770129 v 3.197e-4 L 3.6788922,2.1240777 2.8606856,0.70806976 3.2700554,0.70828292 Z&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path14&#39; /%3E%3C/svg%3E">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-keycloak-function" />
         <zeebe:taskHeaders>
           <zeebe:header key="resultVariable" value="result" />
-          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
         <zeebe:ioMapping>
+          <zeebe:input source="search-users" target="keycloakFunction" />
+          <zeebe:input source="USER" target="connectionType" />
           <zeebe:input source="=keycloakConnection.url" target="serverUrl" />
           <zeebe:input source="=keycloakConnection.connectinRealm" target="connectionRealm" />
           <zeebe:input source="=keycloakConnection.clientId" target="clientId" />
-          <zeebe:input source="=keycloakConnection.adminUser" target="adminUsername" />
+          <zeebe:input source="=keycloakConnection.adminUser" target="adminUserName" />
           <zeebe:input source="=keycloakConnection.adminPassword" target="adminUserPassword" />
-          <zeebe:input source="=userWalterBatesId" target="userId" />
-          <zeebe:input source="=&#34;search-users&#34;" target="keycloakFunction" />
-          <zeebe:input source="=&#34;USER&#34;" target="connectionType" />
-          <zeebe:output source="=result.userId" target="searchByUserId_UserId" />
-          <zeebe:output source="=result.listUsers" target="searchByUserId_List" />
-          <zeebe:output source="=result.user" target="searchByUserId_User" />
+          <zeebe:input source="camunda-platform" target="userRealm" />
+          <zeebe:input source="true" target="searchByUserId_optional" />
+          <zeebe:input source="=userWalterBatesId" target="searchByUserId" />
+          <zeebe:input source="false" target="searchByUserName_optional" />
+          <zeebe:input source="false" target="searchByUserFirstName_optional" />
+          <zeebe:input source="false" target="searchByUserLastName_optional" />
+          <zeebe:input source="false" target="searchByUUserEmail_optional" />
+          <zeebe:input source="false" target="pageNumber_optional" />
+          <zeebe:input source="false" target="pageSize_optional" />
+          <zeebe:input source="true" target="userId_optional" />
+          <zeebe:input source="true" target="listUsers_optional" />
+          <zeebe:input source="true" target="user_optional" />
+          <zeebe:output source="= result.userId" target="searchByUserId_UserId" />
+          <zeebe:output source="= result.listUsers" target="searchByUserId_ListUser" />
+          <zeebe:output source="= result.user" target="searchByUserId_User" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1p8k90c</bpmn:incoming>
       <bpmn:incoming>Flow_1ozq1f5</bpmn:incoming>
       <bpmn:outgoing>Flow_0yw8jpx</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:boundaryEvent id="Event_1s7c15t" name="20s" attachedToRef="Activity_ReviewDocument">
-      <bpmn:outgoing>Flow_1ozq1f5</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_08bh41m">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20S</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:boundaryEvent>
-    <bpmn:serviceTask id="Activity_0l41yt6" name="Create user Williams.Bates">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="c-keycloak-function" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="resultVariable" value="result" />
-          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
-        </zeebe:taskHeaders>
-        <zeebe:ioMapping>
-          <zeebe:input source="=keycloakConnection.url" target="serverUrl" />
-          <zeebe:input source="=&#34;William.Bates&#34;" target="userName" />
-          <zeebe:input source="=&#34;William&#34;" target="userFirstName" />
-          <zeebe:input source="=&#34;Bates&#34;" target="userLastName" />
-          <zeebe:input source="=&#34;william.bates@camunda.com&#34;" target="userEmail" />
-          <zeebe:input source="=&#34;bpm&#34;" target="userPassword" />
-          <zeebe:input source="=&#34;create-user&#34;" target="keycloakFunction" />
-          <zeebe:input source="=true" target="userEnabled" />
-          <zeebe:input source="=&#34;bpm&#34;" target="userPassword" />
-          <zeebe:input source="=&#34;Operate,Tasklist,Optimize&#34;" target="userRoles" />
-          <zeebe:input source="=&#34;CONNECTIONURL&#34;" target="connectionType" />
-          <zeebe:input source="=&#34;USER;&#34;&#10;+keycloakConnection.url&#10;+&#34;;&#34;+keycloakConnection.connectinRealm&#10;+&#34;;&#34;+keycloakConnection.clientId&#10;+&#34;;&#34;+keycloakConnection.adminUser&#10;+&#34;;&#34;+keycloakConnection.adminPassword" target="keycloakConnectionUrl" />
-          <zeebe:input source="=FALSE" target="errorIfUserExists" />
-          <zeebe:output source="=result.userId" target="userWilliamBatesId" />
-        </zeebe:ioMapping>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_08klpi3</bpmn:incoming>
-      <bpmn:outgoing>Flow_15j7l9g</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_15j7l9g" sourceRef="Activity_0l41yt6" targetRef="Activity_ReviewDocument" />
-    <bpmn:sequenceFlow id="Flow_1mt638j" sourceRef="Activity_1re6691" targetRef="Activity_1n8jw00" />
     <bpmn:userTask id="Activity_0m6pb5k" name="Verify user search">
       <bpmn:incoming>Flow_0nkogzw</bpmn:incoming>
       <bpmn:outgoing>Flow_1oae2qp</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_1vd8ph6" name="Update Walter Bates">
+    <bpmn:userTask id="Activity_0vgzdqc" name="User can&#39;t connect to Operate">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_0gsjem7</bpmn:incoming>
+      <bpmn:outgoing>Flow_03qsr81</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="SearchBates" name="search Bates" zeebe:modelerTemplate="io.camunda.connector.keycloak.KeycloakFunction" zeebe:modelerTemplateIcon="data:image/svg+xml,%3C?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; standalone=&#39;no&#39;?%3E%3Csvg   width=&#39;17.999758&#39;   height=&#39;16.226999&#39;   viewBox=&#39;0 0 4.7623956 4.2933293&#39;   version=&#39;1.1&#39;   id=&#39;svg14&#39;   xmlns=&#39;http://www.w3.org/2000/svg&#39;   xmlns:svg=&#39;http://www.w3.org/2000/svg&#39;%3E  %3Cdefs     id=&#39;defs14&#39; /%3E  %3Cpath     d=&#39;M 0.61762502,1.0508277 1.2268303,-5.736842e-4 3.6800646,-0.001 4.2860725,1.0610592 4.2868186,3.1853909 3.6802777,4.2465975 1.2276829,4.2474501 0.61144344,3.1853909 Z&#39;     style=&#39;display:inline;fill:%234d4d4d;fill-opacity:1;stroke-width:0.028199&#39;     id=&#39;path1&#39; /%3E  %3Cpath     d=&#39;M 0.61144344,3.1850712 H 1.7172001 L 1.1098066,2.1149119 1.6036935,1.0510408 0.61762502,1.0508277 0,2.1235448&#39;     style=&#39;fill:%23ededed;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path2&#39; /%3E  %3Cpath     d=&#39;M 2.0524974,3.1850712 H 2.860579 L 3.5752975,2.1434751 2.8730488,1.0610592 H 1.922258 L 1.3496093,2.1070251 Z&#39;     style=&#39;fill:%23e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path3&#39; /%3E  %3Cpath     d=&#39;M 0,2.1234382 0.61155002,3.1853909 H 1.7172001 l -0.600679,-1.058329 z&#39;     style=&#39;fill:%23acacac;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path4&#39; /%3E  %3Cpath     d=&#39;M 1.3614395,2.1236514 2.0524974,3.1854975 H 2.860579 L 3.5641067,2.1240777 Z&#39;     style=&#39;fill:%239e9e9e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path5&#39; /%3E  %3Cpath     d=&#39;M 1.6351343,2.1243974 1.4264527,2.1850409 1.226404,2.1240777 2.0435448,0.7078566 2.2479632,1.0612724&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path6&#39; /%3E  %3Cpath     d=&#39;M 2.2472172,3.1851777 2.043758,3.5402988 1.5009514,2.9555001 1.2259777,2.124504 v -4.263e-4 h 0.40905&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path7&#39; /%3E  %3Cpath     d=&#39;m 1.226404,2.1240777 h -3.198e-4 v 3.197e-4 L 1.0216658,2.4784527 0.81650134,2.1259961 1.0245435,1.7651198 1.6350277,0.7078566 h 0.4086237&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path8&#39; /%3E  %3Cpath     d=&#39;M 3.4750067,3.1850712 H 4.7124949 L 4.7117488,1.0609527 H 3.4749001 Z&#39;     style=&#39;fill:%23d4d4d4;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path9&#39; /%3E  %3Cpath     d=&#39;m 3.4750067,2.1270619 v 1.058329 h 1.23525 v -1.058329 z&#39;     style=&#39;fill:%23919191;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path10&#39; /%3E  %3Cpath     d=&#39;M 2.0438645,3.5406185 H 1.6350277 L 1.0216658,2.4784527 1.2260842,2.124504 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path11&#39; /%3E  %3Cpath     d=&#39;M 3.6788922,2.1240777 2.8615382,3.5404054 C 2.7864001,3.4299896 2.6576527,3.1853909 2.6576527,3.1853909 L 3.2708014,2.1239711 Z&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path12&#39; /%3E  %3Cpath     d=&#39;M 3.2698422,3.5404054 2.8615382,3.5402988 3.6789988,2.1240777 3.8833106,1.7705553 4.0880488,2.126529 M 3.6788922,2.1240777 H 3.270908 L 2.6575461,1.0611658 2.860579,0.70796318 3.3570238,1.3391237 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path13&#39; /%3E  %3Cpath     d=&#39;m 3.8832041,1.770129 v 3.197e-4 L 3.6788922,2.1240777 2.8606856,0.70806976 3.2700554,0.70828292 Z&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path14&#39; /%3E%3C/svg%3E">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-keycloak-function" />
         <zeebe:taskHeaders>
           <zeebe:header key="resultVariable" value="result" />
-          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
         <zeebe:ioMapping>
+          <zeebe:input source="search-users" target="keycloakFunction" />
+          <zeebe:input source="USER" target="connectionType" />
           <zeebe:input source="=keycloakConnection.url" target="serverUrl" />
           <zeebe:input source="=keycloakConnection.connectinRealm" target="connectionRealm" />
           <zeebe:input source="=keycloakConnection.clientId" target="clientId" />
-          <zeebe:input source="=keycloakConnection.adminUser" target="adminUsername" />
+          <zeebe:input source="=keycloakConnection.adminUser" target="adminUserName" />
           <zeebe:input source="=keycloakConnection.adminPassword" target="adminUserPassword" />
+          <zeebe:input source="camunda-platform" target="userRealm" />
+          <zeebe:input source="false" target="searchByUserId_optional" />
+          <zeebe:input source="false" target="searchByUserName_optional" />
+          <zeebe:input source="false" target="searchByUserFirstName_optional" />
+          <zeebe:input source="true" target="searchByUserLastName_optional" />
+          <zeebe:input source="=&#34;Bates&#34;" target="searchByUserLastName" />
+          <zeebe:input source="false" target="searchByUUserEmail_optional" />
+          <zeebe:input source="false" target="pageNumber_optional" />
+          <zeebe:input source="false" target="pageSize_optional" />
+          <zeebe:input source="false" target="userId_optional" />
+          <zeebe:input source="true" target="listUsers_optional" />
+          <zeebe:input source="false" target="user_optional" />
+          <zeebe:output source="= result.listUsers" target="searchByLastNameBates_list" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0yw8jpx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nkogzw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="UpdateWalterBates" name="Update Walter Bates" zeebe:modelerTemplate="io.camunda.connector.keycloak.KeycloakFunction" zeebe:modelerTemplateIcon="data:image/svg+xml,%3C?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; standalone=&#39;no&#39;?%3E%3Csvg   width=&#39;17.999758&#39;   height=&#39;16.226999&#39;   viewBox=&#39;0 0 4.7623956 4.2933293&#39;   version=&#39;1.1&#39;   id=&#39;svg14&#39;   xmlns=&#39;http://www.w3.org/2000/svg&#39;   xmlns:svg=&#39;http://www.w3.org/2000/svg&#39;%3E  %3Cdefs     id=&#39;defs14&#39; /%3E  %3Cpath     d=&#39;M 0.61762502,1.0508277 1.2268303,-5.736842e-4 3.6800646,-0.001 4.2860725,1.0610592 4.2868186,3.1853909 3.6802777,4.2465975 1.2276829,4.2474501 0.61144344,3.1853909 Z&#39;     style=&#39;display:inline;fill:%234d4d4d;fill-opacity:1;stroke-width:0.028199&#39;     id=&#39;path1&#39; /%3E  %3Cpath     d=&#39;M 0.61144344,3.1850712 H 1.7172001 L 1.1098066,2.1149119 1.6036935,1.0510408 0.61762502,1.0508277 0,2.1235448&#39;     style=&#39;fill:%23ededed;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path2&#39; /%3E  %3Cpath     d=&#39;M 2.0524974,3.1850712 H 2.860579 L 3.5752975,2.1434751 2.8730488,1.0610592 H 1.922258 L 1.3496093,2.1070251 Z&#39;     style=&#39;fill:%23e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path3&#39; /%3E  %3Cpath     d=&#39;M 0,2.1234382 0.61155002,3.1853909 H 1.7172001 l -0.600679,-1.058329 z&#39;     style=&#39;fill:%23acacac;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path4&#39; /%3E  %3Cpath     d=&#39;M 1.3614395,2.1236514 2.0524974,3.1854975 H 2.860579 L 3.5641067,2.1240777 Z&#39;     style=&#39;fill:%239e9e9e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path5&#39; /%3E  %3Cpath     d=&#39;M 1.6351343,2.1243974 1.4264527,2.1850409 1.226404,2.1240777 2.0435448,0.7078566 2.2479632,1.0612724&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path6&#39; /%3E  %3Cpath     d=&#39;M 2.2472172,3.1851777 2.043758,3.5402988 1.5009514,2.9555001 1.2259777,2.124504 v -4.263e-4 h 0.40905&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path7&#39; /%3E  %3Cpath     d=&#39;m 1.226404,2.1240777 h -3.198e-4 v 3.197e-4 L 1.0216658,2.4784527 0.81650134,2.1259961 1.0245435,1.7651198 1.6350277,0.7078566 h 0.4086237&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path8&#39; /%3E  %3Cpath     d=&#39;M 3.4750067,3.1850712 H 4.7124949 L 4.7117488,1.0609527 H 3.4749001 Z&#39;     style=&#39;fill:%23d4d4d4;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path9&#39; /%3E  %3Cpath     d=&#39;m 3.4750067,2.1270619 v 1.058329 h 1.23525 v -1.058329 z&#39;     style=&#39;fill:%23919191;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path10&#39; /%3E  %3Cpath     d=&#39;M 2.0438645,3.5406185 H 1.6350277 L 1.0216658,2.4784527 1.2260842,2.124504 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path11&#39; /%3E  %3Cpath     d=&#39;M 3.6788922,2.1240777 2.8615382,3.5404054 C 2.7864001,3.4299896 2.6576527,3.1853909 2.6576527,3.1853909 L 3.2708014,2.1239711 Z&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path12&#39; /%3E  %3Cpath     d=&#39;M 3.2698422,3.5404054 2.8615382,3.5402988 3.6789988,2.1240777 3.8833106,1.7705553 4.0880488,2.126529 M 3.6788922,2.1240777 H 3.270908 L 2.6575461,1.0611658 2.860579,0.70796318 3.3570238,1.3391237 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path13&#39; /%3E  %3Cpath     d=&#39;m 3.8832041,1.770129 v 3.197e-4 L 3.6788922,2.1240777 2.8606856,0.70806976 3.2700554,0.70828292 Z&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path14&#39; /%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="c-keycloak-function" />
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="result" />
+        </zeebe:taskHeaders>
+        <zeebe:ioMapping>
+          <zeebe:input source="update-user" target="keycloakFunction" />
+          <zeebe:input source="USER" target="connectionType" />
+          <zeebe:input source="=keycloakConnection.url" target="serverUrl" />
+          <zeebe:input source="=keycloakConnection.connectinRealm" target="connectionRealm" />
+          <zeebe:input source="=keycloakConnection.clientId" target="clientId" />
+          <zeebe:input source="=keycloakConnection.adminUser" target="adminUserName" />
+          <zeebe:input source="=keycloakConnection.adminPassword" target="adminUserPassword" />
+          <zeebe:input source="camunda-platform" target="userRealm" />
+          <zeebe:input source="false" target="userFirstName_optional" />
+          <zeebe:input source="false" target="userLastName_optional" />
+          <zeebe:input source="true" target="userEmail_optional" />
+          <zeebe:input source="walter.bates@Toghevent.com" target="userEmail" />
+          <zeebe:input source="false" target="userPassword_optional" />
+          <zeebe:input source="false" target="userEnabled" />
+          <zeebe:input source="true" target="userRoles_optional" />
+          <zeebe:input source="Tasklist" target="userRoles" />
           <zeebe:input source="=userWalterBatesId" target="userId" />
-          <zeebe:input source="=&#34;Tasklist&#34;" target="userRoles" />
-          <zeebe:input source="=&#34;update-user&#34;" target="keycloakFunction" />
-          <zeebe:input source="=&#34;USER&#34;" target="connectionType" />
-          <zeebe:input source="=&#34;walter.bates@Toghevent.com&#34;" target="userEmail" />
-          <zeebe:output source="=result.currentRoles" target="currentRoles" />
+          <zeebe:input source="false" target="status_optional" />
+          <zeebe:input source="false" target="dateOperation_optional" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1oae2qp</bpmn:incoming>
       <bpmn:incoming>Flow_1apcmsx</bpmn:incoming>
       <bpmn:outgoing>Flow_0gsjem7</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:userTask id="Activity_0vgzdqc" name="User can&#39;t connect to Operate">
-      <bpmn:extensionElements />
-      <bpmn:incoming>Flow_0gsjem7</bpmn:incoming>
-      <bpmn:outgoing>Flow_03qsr81</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_1knweah" name="delete User Wialter Bates">
+    <bpmn:serviceTask id="DeleteWalterBates" name="Delete Walter Bates" zeebe:modelerTemplate="io.camunda.connector.keycloak.KeycloakFunction" zeebe:modelerTemplateIcon="data:image/svg+xml,%3C?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; standalone=&#39;no&#39;?%3E%3Csvg   width=&#39;17.999758&#39;   height=&#39;16.226999&#39;   viewBox=&#39;0 0 4.7623956 4.2933293&#39;   version=&#39;1.1&#39;   id=&#39;svg14&#39;   xmlns=&#39;http://www.w3.org/2000/svg&#39;   xmlns:svg=&#39;http://www.w3.org/2000/svg&#39;%3E  %3Cdefs     id=&#39;defs14&#39; /%3E  %3Cpath     d=&#39;M 0.61762502,1.0508277 1.2268303,-5.736842e-4 3.6800646,-0.001 4.2860725,1.0610592 4.2868186,3.1853909 3.6802777,4.2465975 1.2276829,4.2474501 0.61144344,3.1853909 Z&#39;     style=&#39;display:inline;fill:%234d4d4d;fill-opacity:1;stroke-width:0.028199&#39;     id=&#39;path1&#39; /%3E  %3Cpath     d=&#39;M 0.61144344,3.1850712 H 1.7172001 L 1.1098066,2.1149119 1.6036935,1.0510408 0.61762502,1.0508277 0,2.1235448&#39;     style=&#39;fill:%23ededed;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path2&#39; /%3E  %3Cpath     d=&#39;M 2.0524974,3.1850712 H 2.860579 L 3.5752975,2.1434751 2.8730488,1.0610592 H 1.922258 L 1.3496093,2.1070251 Z&#39;     style=&#39;fill:%23e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path3&#39; /%3E  %3Cpath     d=&#39;M 0,2.1234382 0.61155002,3.1853909 H 1.7172001 l -0.600679,-1.058329 z&#39;     style=&#39;fill:%23acacac;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path4&#39; /%3E  %3Cpath     d=&#39;M 1.3614395,2.1236514 2.0524974,3.1854975 H 2.860579 L 3.5641067,2.1240777 Z&#39;     style=&#39;fill:%239e9e9e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path5&#39; /%3E  %3Cpath     d=&#39;M 1.6351343,2.1243974 1.4264527,2.1850409 1.226404,2.1240777 2.0435448,0.7078566 2.2479632,1.0612724&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path6&#39; /%3E  %3Cpath     d=&#39;M 2.2472172,3.1851777 2.043758,3.5402988 1.5009514,2.9555001 1.2259777,2.124504 v -4.263e-4 h 0.40905&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path7&#39; /%3E  %3Cpath     d=&#39;m 1.226404,2.1240777 h -3.198e-4 v 3.197e-4 L 1.0216658,2.4784527 0.81650134,2.1259961 1.0245435,1.7651198 1.6350277,0.7078566 h 0.4086237&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path8&#39; /%3E  %3Cpath     d=&#39;M 3.4750067,3.1850712 H 4.7124949 L 4.7117488,1.0609527 H 3.4749001 Z&#39;     style=&#39;fill:%23d4d4d4;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path9&#39; /%3E  %3Cpath     d=&#39;m 3.4750067,2.1270619 v 1.058329 h 1.23525 v -1.058329 z&#39;     style=&#39;fill:%23919191;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path10&#39; /%3E  %3Cpath     d=&#39;M 2.0438645,3.5406185 H 1.6350277 L 1.0216658,2.4784527 1.2260842,2.124504 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path11&#39; /%3E  %3Cpath     d=&#39;M 3.6788922,2.1240777 2.8615382,3.5404054 C 2.7864001,3.4299896 2.6576527,3.1853909 2.6576527,3.1853909 L 3.2708014,2.1239711 Z&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path12&#39; /%3E  %3Cpath     d=&#39;M 3.2698422,3.5404054 2.8615382,3.5402988 3.6789988,2.1240777 3.8833106,1.7705553 4.0880488,2.126529 M 3.6788922,2.1240777 H 3.270908 L 2.6575461,1.0611658 2.860579,0.70796318 3.3570238,1.3391237 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path13&#39; /%3E  %3Cpath     d=&#39;m 3.8832041,1.770129 v 3.197e-4 L 3.6788922,2.1240777 2.8606856,0.70806976 3.2700554,0.70828292 Z&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path14&#39; /%3E%3C/svg%3E">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-keycloak-function" />
         <zeebe:taskHeaders>
           <zeebe:header key="resultVariable" value="result" />
-          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
         <zeebe:ioMapping>
+          <zeebe:input source="delete-user" target="keycloakFunction" />
+          <zeebe:input source="USER" target="connectionType" />
           <zeebe:input source="=keycloakConnection.url" target="serverUrl" />
-          <zeebe:input source="=keycloakConnection.connectinRealm" target="connectinRealm" />
+          <zeebe:input source="=keycloakConnection.connectinRealm" target="connectionRealm" />
           <zeebe:input source="=keycloakConnection.clientId" target="clientId" />
-          <zeebe:input source="=keycloakConnection.adminUser" target="adminUsername" />
+          <zeebe:input source="=keycloakConnection.adminUser" target="adminUserName" />
           <zeebe:input source="=keycloakConnection.adminPassword" target="adminUserPassword" />
+          <zeebe:input source="camunda-platform" target="userRealm" />
           <zeebe:input source="=userWalterBatesId" target="userId" />
-          <zeebe:input source="=&#34;delete-user&#34;" target="keycloakFunction" />
-          <zeebe:input source="=&#34;USER&#34;" target="connectionType" />
+          <zeebe:input source="false" target="status_optional" />
+          <zeebe:input source="false" target="dateOperation_optional" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_03qsr81</bpmn:incoming>
       <bpmn:incoming>Flow_156vlkm</bpmn:incoming>
       <bpmn:outgoing>Flow_0oijbog</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1re6691" name="delete User William Bates">
+    <bpmn:serviceTask id="Activity_1lsplzc" name="Delete Walter Bates" zeebe:modelerTemplate="io.camunda.connector.keycloak.KeycloakFunction" zeebe:modelerTemplateIcon="data:image/svg+xml,%3C?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; standalone=&#39;no&#39;?%3E%3Csvg   width=&#39;17.999758&#39;   height=&#39;16.226999&#39;   viewBox=&#39;0 0 4.7623956 4.2933293&#39;   version=&#39;1.1&#39;   id=&#39;svg14&#39;   xmlns=&#39;http://www.w3.org/2000/svg&#39;   xmlns:svg=&#39;http://www.w3.org/2000/svg&#39;%3E  %3Cdefs     id=&#39;defs14&#39; /%3E  %3Cpath     d=&#39;M 0.61762502,1.0508277 1.2268303,-5.736842e-4 3.6800646,-0.001 4.2860725,1.0610592 4.2868186,3.1853909 3.6802777,4.2465975 1.2276829,4.2474501 0.61144344,3.1853909 Z&#39;     style=&#39;display:inline;fill:%234d4d4d;fill-opacity:1;stroke-width:0.028199&#39;     id=&#39;path1&#39; /%3E  %3Cpath     d=&#39;M 0.61144344,3.1850712 H 1.7172001 L 1.1098066,2.1149119 1.6036935,1.0510408 0.61762502,1.0508277 0,2.1235448&#39;     style=&#39;fill:%23ededed;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path2&#39; /%3E  %3Cpath     d=&#39;M 2.0524974,3.1850712 H 2.860579 L 3.5752975,2.1434751 2.8730488,1.0610592 H 1.922258 L 1.3496093,2.1070251 Z&#39;     style=&#39;fill:%23e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path3&#39; /%3E  %3Cpath     d=&#39;M 0,2.1234382 0.61155002,3.1853909 H 1.7172001 l -0.600679,-1.058329 z&#39;     style=&#39;fill:%23acacac;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path4&#39; /%3E  %3Cpath     d=&#39;M 1.3614395,2.1236514 2.0524974,3.1854975 H 2.860579 L 3.5641067,2.1240777 Z&#39;     style=&#39;fill:%239e9e9e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path5&#39; /%3E  %3Cpath     d=&#39;M 1.6351343,2.1243974 1.4264527,2.1850409 1.226404,2.1240777 2.0435448,0.7078566 2.2479632,1.0612724&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path6&#39; /%3E  %3Cpath     d=&#39;M 2.2472172,3.1851777 2.043758,3.5402988 1.5009514,2.9555001 1.2259777,2.124504 v -4.263e-4 h 0.40905&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path7&#39; /%3E  %3Cpath     d=&#39;m 1.226404,2.1240777 h -3.198e-4 v 3.197e-4 L 1.0216658,2.4784527 0.81650134,2.1259961 1.0245435,1.7651198 1.6350277,0.7078566 h 0.4086237&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path8&#39; /%3E  %3Cpath     d=&#39;M 3.4750067,3.1850712 H 4.7124949 L 4.7117488,1.0609527 H 3.4749001 Z&#39;     style=&#39;fill:%23d4d4d4;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path9&#39; /%3E  %3Cpath     d=&#39;m 3.4750067,2.1270619 v 1.058329 h 1.23525 v -1.058329 z&#39;     style=&#39;fill:%23919191;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path10&#39; /%3E  %3Cpath     d=&#39;M 2.0438645,3.5406185 H 1.6350277 L 1.0216658,2.4784527 1.2260842,2.124504 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path11&#39; /%3E  %3Cpath     d=&#39;M 3.6788922,2.1240777 2.8615382,3.5404054 C 2.7864001,3.4299896 2.6576527,3.1853909 2.6576527,3.1853909 L 3.2708014,2.1239711 Z&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path12&#39; /%3E  %3Cpath     d=&#39;M 3.2698422,3.5404054 2.8615382,3.5402988 3.6789988,2.1240777 3.8833106,1.7705553 4.0880488,2.126529 M 3.6788922,2.1240777 H 3.270908 L 2.6575461,1.0611658 2.860579,0.70796318 3.3570238,1.3391237 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path13&#39; /%3E  %3Cpath     d=&#39;m 3.8832041,1.770129 v 3.197e-4 L 3.6788922,2.1240777 2.8606856,0.70806976 3.2700554,0.70828292 Z&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path14&#39; /%3E%3C/svg%3E">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="c-keycloak-function" />
         <zeebe:taskHeaders>
           <zeebe:header key="resultVariable" value="result" />
-          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
         </zeebe:taskHeaders>
         <zeebe:ioMapping>
+          <zeebe:input source="delete-user" target="keycloakFunction" />
+          <zeebe:input source="USER" target="connectionType" />
           <zeebe:input source="=keycloakConnection.url" target="serverUrl" />
-          <zeebe:input source="=keycloakConnection.connectinRealm" target="connectinRealm" />
+          <zeebe:input source="=keycloakConnection.connectinRealm" target="connectionRealm" />
           <zeebe:input source="=keycloakConnection.clientId" target="clientId" />
-          <zeebe:input source="=keycloakConnection.adminUser" target="adminUsername" />
+          <zeebe:input source="=keycloakConnection.adminUser" target="adminUserName" />
           <zeebe:input source="=keycloakConnection.adminPassword" target="adminUserPassword" />
+          <zeebe:input source="camunda-platform" target="userRealm" />
           <zeebe:input source="=userWilliamBatesId" target="userId" />
-          <zeebe:input source="=&#34;delete-user&#34;" target="keycloakFunction" />
-          <zeebe:input source="=&#34;USER&#34;" target="connectionType" />
+          <zeebe:input source="false" target="status_optional" />
+          <zeebe:input source="false" target="dateOperation_optional" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0oijbog</bpmn:incoming>
@@ -218,6 +231,7 @@
     </bpmn:subProcess>
     <bpmn:subProcess id="Activity_0i7nfa7" triggeredByEvent="true">
       <bpmn:startEvent id="Event_1rtdcau">
+        <bpmn:extensionElements />
         <bpmn:outgoing>Flow_149ossd</bpmn:outgoing>
         <bpmn:errorEventDefinition id="ErrorEventDefinition_1ocop7e" />
       </bpmn:startEvent>
@@ -241,287 +255,321 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0xp9lw4" sourceRef="Event_04qot35" targetRef="Event_1u23g9m" />
     </bpmn:subProcess>
-    <bpmn:boundaryEvent id="Event_0dxb40n" name="20s" attachedToRef="Activity_0m6pb5k">
-      <bpmn:outgoing>Flow_1apcmsx</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_0uh1xpc">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20S</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_018jqrj" name="Youpie">
+      <bpmn:incoming>Flow_14mm3ff</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_1n8jw00" name="That&#39;s all folks">
+      <bpmn:incoming>Flow_1mt638j</bpmn:incoming>
+      <bpmn:outgoing>Flow_14mm3ff</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="CreateWilliamsBates" name="Create user Williams.Bates" zeebe:modelerTemplate="io.camunda.connector.keycloak.KeycloakFunction" zeebe:modelerTemplateIcon="data:image/svg+xml,%3C?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; standalone=&#39;no&#39;?%3E%3Csvg   width=&#39;17.999758&#39;   height=&#39;16.226999&#39;   viewBox=&#39;0 0 4.7623956 4.2933293&#39;   version=&#39;1.1&#39;   id=&#39;svg14&#39;   xmlns=&#39;http://www.w3.org/2000/svg&#39;   xmlns:svg=&#39;http://www.w3.org/2000/svg&#39;%3E  %3Cdefs     id=&#39;defs14&#39; /%3E  %3Cpath     d=&#39;M 0.61762502,1.0508277 1.2268303,-5.736842e-4 3.6800646,-0.001 4.2860725,1.0610592 4.2868186,3.1853909 3.6802777,4.2465975 1.2276829,4.2474501 0.61144344,3.1853909 Z&#39;     style=&#39;display:inline;fill:%234d4d4d;fill-opacity:1;stroke-width:0.028199&#39;     id=&#39;path1&#39; /%3E  %3Cpath     d=&#39;M 0.61144344,3.1850712 H 1.7172001 L 1.1098066,2.1149119 1.6036935,1.0510408 0.61762502,1.0508277 0,2.1235448&#39;     style=&#39;fill:%23ededed;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path2&#39; /%3E  %3Cpath     d=&#39;M 2.0524974,3.1850712 H 2.860579 L 3.5752975,2.1434751 2.8730488,1.0610592 H 1.922258 L 1.3496093,2.1070251 Z&#39;     style=&#39;fill:%23e0e0e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path3&#39; /%3E  %3Cpath     d=&#39;M 0,2.1234382 0.61155002,3.1853909 H 1.7172001 l -0.600679,-1.058329 z&#39;     style=&#39;fill:%23acacac;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path4&#39; /%3E  %3Cpath     d=&#39;M 1.3614395,2.1236514 2.0524974,3.1854975 H 2.860579 L 3.5641067,2.1240777 Z&#39;     style=&#39;fill:%239e9e9e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path5&#39; /%3E  %3Cpath     d=&#39;M 1.6351343,2.1243974 1.4264527,2.1850409 1.226404,2.1240777 2.0435448,0.7078566 2.2479632,1.0612724&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path6&#39; /%3E  %3Cpath     d=&#39;M 2.2472172,3.1851777 2.043758,3.5402988 1.5009514,2.9555001 1.2259777,2.124504 v -4.263e-4 h 0.40905&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path7&#39; /%3E  %3Cpath     d=&#39;m 1.226404,2.1240777 h -3.198e-4 v 3.197e-4 L 1.0216658,2.4784527 0.81650134,2.1259961 1.0245435,1.7651198 1.6350277,0.7078566 h 0.4086237&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path8&#39; /%3E  %3Cpath     d=&#39;M 3.4750067,3.1850712 H 4.7124949 L 4.7117488,1.0609527 H 3.4749001 Z&#39;     style=&#39;fill:%23d4d4d4;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path9&#39; /%3E  %3Cpath     d=&#39;m 3.4750067,2.1270619 v 1.058329 h 1.23525 v -1.058329 z&#39;     style=&#39;fill:%23919191;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path10&#39; /%3E  %3Cpath     d=&#39;M 2.0438645,3.5406185 H 1.6350277 L 1.0216658,2.4784527 1.2260842,2.124504 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path11&#39; /%3E  %3Cpath     d=&#39;M 3.6788922,2.1240777 2.8615382,3.5404054 C 2.7864001,3.4299896 2.6576527,3.1853909 2.6576527,3.1853909 L 3.2708014,2.1239711 Z&#39;     style=&#39;fill:%23008aaa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path12&#39; /%3E  %3Cpath     d=&#39;M 3.2698422,3.5404054 2.8615382,3.5402988 3.6789988,2.1240777 3.8833106,1.7705553 4.0880488,2.126529 M 3.6788922,2.1240777 H 3.270908 L 2.6575461,1.0611658 2.860579,0.70796318 3.3570238,1.3391237 Z&#39;     style=&#39;fill:%2300b8e3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path13&#39; /%3E  %3Cpath     d=&#39;m 3.8832041,1.770129 v 3.197e-4 L 3.6788922,2.1240777 2.8606856,0.70806976 3.2700554,0.70828292 Z&#39;     style=&#39;fill:%2333c6e9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.0352487&#39;     id=&#39;path14&#39; /%3E%3C/svg%3E">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="c-keycloak-function" />
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="result" />
+        </zeebe:taskHeaders>
+        <zeebe:ioMapping>
+          <zeebe:input source="create-user" target="keycloakFunction" />
+          <zeebe:input source="USER" target="connectionType" />
+          <zeebe:input source="=keycloakConnection.url" target="serverUrl" />
+          <zeebe:input source="=keycloakConnection.connectinRealm" target="connectionRealm" />
+          <zeebe:input source="=keycloakConnection.clientId" target="clientId" />
+          <zeebe:input source="=keycloakConnection.adminUser" target="adminUserName" />
+          <zeebe:input source="=keycloakConnection.adminPassword" target="adminUserPassword" />
+          <zeebe:input source="camunda-platform" target="userRealm" />
+          <zeebe:input source="Williams.Bates" target="userName" />
+          <zeebe:input source="true" target="userFirstName_optional" />
+          <zeebe:input source="Williams" target="userFirstName" />
+          <zeebe:input source="true" target="userLastName_optional" />
+          <zeebe:input source="Bates" target="userLastName" />
+          <zeebe:input source="true" target="userEmail_optional" />
+          <zeebe:input source="williams.bates@camunda.com" target="userEmail" />
+          <zeebe:input source="true" target="userPassword_optional" />
+          <zeebe:input source="bpm" target="userPassword" />
+          <zeebe:input source="true" target="userEnabled" />
+          <zeebe:input source="true" target="errorIfUserExists" />
+          <zeebe:input source="true" target="userRoles_optional" />
+          <zeebe:input source="Operate,Tasklist,Optimize" target="userRoles" />
+          <zeebe:input source="true" target="userId_optional" />
+          <zeebe:input source="false" target="status_optional" />
+          <zeebe:input source="false" target="dateOperation_optional" />
+          <zeebe:output source="= result.userId" target="userWilliamBatesId" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_08klpi3</bpmn:incoming>
+      <bpmn:outgoing>Flow_15j7l9g</bpmn:outgoing>
+    </bpmn:serviceTask>
     <bpmn:boundaryEvent id="Event_1yyjbgg" name="20s" attachedToRef="Activity_0vgzdqc">
       <bpmn:outgoing>Flow_156vlkm</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1q4z0yf">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:serviceTask id="Activity_1d3l5n4" name="searchByLastName Bates">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="c-keycloak-function" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="resultVariable" value="result" />
-          <zeebe:header key="errorExpression" value="if is defined(error) then bpmnError(error.code, error.message) else null" />
-        </zeebe:taskHeaders>
-        <zeebe:ioMapping>
-          <zeebe:input source="=keycloakConnection.url" target="serverUrl" />
-          <zeebe:input source="=keycloakConnection.connectinRealm" target="connectionRealm" />
-          <zeebe:input source="=keycloakConnection.clientId" target="clientId" />
-          <zeebe:input source="=keycloakConnection.adminUser" target="adminUsername" />
-          <zeebe:input source="=keycloakConnection.adminPassword" target="adminUserPassword" />
-          <zeebe:input source="=&#34;search-users&#34;" target="keycloakFunction" />
-          <zeebe:input source="=&#34;USER&#34;" target="connectionType" />
-          <zeebe:input source="=&#34;Bates&#34;" target="userLastName" />
-          <zeebe:input source="=&#34;&#34;" target="userName" />
-          <zeebe:output source="=result.listUsers" target="searchByLastNameBates_list" />
-        </zeebe:ioMapping>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0yw8jpx</bpmn:incoming>
-      <bpmn:outgoing>Flow_0nkogzw</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0nkogzw" sourceRef="Activity_1d3l5n4" targetRef="Activity_0m6pb5k" />
-    <bpmn:endEvent id="Event_018jqrj" name="Youpie">
-      <bpmn:incoming>Flow_14mm3ff</bpmn:incoming>
-    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_0dxb40n" name="20s" attachedToRef="Activity_0m6pb5k">
+      <bpmn:outgoing>Flow_1apcmsx</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0uh1xpc">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_1s7c15t" name="20s" attachedToRef="Activity_ReviewDocument">
+      <bpmn:outgoing>Flow_1ozq1f5</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_08bh41m">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT20S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1gsvooc" sourceRef="StartEvent_1" targetRef="Activity_09nx1ov" />
+    <bpmn:sequenceFlow id="Flow_0j2cgtr" sourceRef="Activity_09nx1ov" targetRef="Activity_CreateWalterBates" />
+    <bpmn:sequenceFlow id="Flow_08klpi3" sourceRef="Activity_CreateWalterBates" targetRef="CreateWilliamsBates" />
+    <bpmn:sequenceFlow id="Flow_15j7l9g" sourceRef="CreateWilliamsBates" targetRef="Activity_ReviewDocument" />
+    <bpmn:sequenceFlow id="Flow_1p8k90c" sourceRef="Activity_ReviewDocument" targetRef="SearchWalterBates" />
+    <bpmn:sequenceFlow id="Flow_1ozq1f5" sourceRef="Event_1s7c15t" targetRef="SearchWalterBates" />
+    <bpmn:sequenceFlow id="Flow_0yw8jpx" sourceRef="SearchWalterBates" targetRef="SearchBates" />
+    <bpmn:sequenceFlow id="Flow_0nkogzw" sourceRef="SearchBates" targetRef="Activity_0m6pb5k" />
+    <bpmn:sequenceFlow id="Flow_1oae2qp" sourceRef="Activity_0m6pb5k" targetRef="UpdateWalterBates" />
+    <bpmn:sequenceFlow id="Flow_0gsjem7" sourceRef="UpdateWalterBates" targetRef="Activity_0vgzdqc" />
+    <bpmn:sequenceFlow id="Flow_03qsr81" sourceRef="Activity_0vgzdqc" targetRef="DeleteWalterBates" />
+    <bpmn:sequenceFlow id="Flow_1apcmsx" sourceRef="Event_0dxb40n" targetRef="UpdateWalterBates" />
+    <bpmn:sequenceFlow id="Flow_156vlkm" sourceRef="Event_1yyjbgg" targetRef="DeleteWalterBates" />
+    <bpmn:sequenceFlow id="Flow_0oijbog" sourceRef="DeleteWalterBates" targetRef="Activity_1lsplzc" />
+    <bpmn:sequenceFlow id="Flow_1mt638j" sourceRef="Activity_1lsplzc" targetRef="Activity_1n8jw00" />
     <bpmn:sequenceFlow id="Flow_14mm3ff" sourceRef="Activity_1n8jw00" targetRef="Event_018jqrj" />
-    <bpmn:userTask id="Activity_1n8jw00" name="That&#39;s all folks">
-      <bpmn:incoming>Flow_1mt638j</bpmn:incoming>
-      <bpmn:outgoing>Flow_14mm3ff</bpmn:outgoing>
-    </bpmn:userTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1v5nw3b">
       <bpmndi:BPMNShape id="Participant_0edqg9w_di" bpmnElement="Participant_0edqg9w" isHorizontal="true">
-        <dc:Bounds x="179" y="80" width="2401" height="750" />
+        <dc:Bounds x="179" y="80" width="2401" height="810" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="252" y="192" width="36" height="36" />
+        <dc:Bounds x="252" y="252" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="242" y="235" width="56" height="14" />
+          <dc:Bounds x="242" y="295" width="56" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0nodcqg_di" bpmnElement="Activity_09nx1ov">
-        <dc:Bounds x="350" y="170" width="100" height="80" />
+        <dc:Bounds x="350" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0wa2sv0_di" bpmnElement="Activity_UploadFile">
-        <dc:Bounds x="500" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0wa2sv0_di" bpmnElement="Activity_CreateWalterBates">
+        <dc:Bounds x="500" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0wffjkf_di" bpmnElement="Activity_ReviewDocument">
-        <dc:Bounds x="820" y="170" width="100" height="80" />
+        <dc:Bounds x="820" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0b34525" bpmnElement="Activity_19840r4">
-        <dc:Bounds x="990" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1258n42" bpmnElement="Activity_0l41yt6">
-        <dc:Bounds x="670" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0b34525" bpmnElement="SearchWalterBates">
+        <dc:Bounds x="990" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_08jkhv0" bpmnElement="Activity_0m6pb5k">
-        <dc:Bounds x="1370" y="170" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_01ozm9d" bpmnElement="Activity_1vd8ph6">
-        <dc:Bounds x="1530" y="170" width="100" height="80" />
+        <dc:Bounds x="1370" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1qx4dji" bpmnElement="Activity_0vgzdqc">
-        <dc:Bounds x="1730" y="170" width="100" height="80" />
+        <dc:Bounds x="1730" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0asaxc9" bpmnElement="Activity_1knweah">
-        <dc:Bounds x="1920" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_0gop5bl" bpmnElement="SearchBates">
+        <dc:Bounds x="1160" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_00yvokw" bpmnElement="Activity_1re6691">
-        <dc:Bounds x="2070" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1ls8ioi" bpmnElement="UpdateWalterBates">
+        <dc:Bounds x="1550" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1bcq6g3" bpmnElement="Activity_1d3l5n4">
-        <dc:Bounds x="1150" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1igw35b" bpmnElement="DeleteWalterBates">
+        <dc:Bounds x="1930" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_018jqrj_di" bpmnElement="Event_018jqrj">
-        <dc:Bounds x="2432" y="192" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2435" y="235" width="33" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0qygo03_di" bpmnElement="Activity_1n8jw00">
-        <dc:Bounds x="2240" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="BPMNShape_1q062vi" bpmnElement="Activity_1lsplzc">
+        <dc:Bounds x="2070" y="230" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_01a95lk_di" bpmnElement="Activity_09p0gfk" isExpanded="true">
-        <dc:Bounds x="2220" y="280" width="202" height="120" />
+        <dc:Bounds x="2220" y="340" width="202" height="120" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0f1l3qq_di" bpmnElement="Event_10gfaeo">
-        <dc:Bounds x="2260" y="342" width="36" height="36" />
+        <dc:Bounds x="2260" y="402" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2271" y="385" width="15" height="14" />
+          <dc:Bounds x="2271" y="445" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1ybwa52_di" bpmnElement="Event_1ybwa52">
-        <dc:Bounds x="2347" y="342" width="36" height="36" />
+        <dc:Bounds x="2347" y="402" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2347" y="385" width="36" height="14" />
+          <dc:Bounds x="2347" y="445" width="36" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1stdvi5_di" bpmnElement="Flow_1stdvi5">
-        <di:waypoint x="2296" y="360" />
-        <di:waypoint x="2347" y="360" />
+        <di:waypoint x="2296" y="420" />
+        <di:waypoint x="2347" y="420" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_0kj2ylh_di" bpmnElement="Activity_0i7nfa7" isExpanded="true">
-        <dc:Bounds x="2130" y="450" width="350" height="300" />
+        <dc:Bounds x="2130" y="510" width="350" height="300" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1pww7tl_di" bpmnElement="Event_1rtdcau">
-        <dc:Bounds x="2170" y="532" width="36" height="36" />
+        <dc:Bounds x="2170" y="592" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1xn2fdj_di" bpmnElement="Event_1xn2fdj">
-        <dc:Bounds x="2422" y="532" width="36" height="36" />
+        <dc:Bounds x="2422" y="592" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zzr08o_di" bpmnElement="Activity_07cljz1">
-        <dc:Bounds x="2260" y="510" width="100" height="80" />
+        <dc:Bounds x="2260" y="570" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1u23g9m_di" bpmnElement="Event_1u23g9m">
-        <dc:Bounds x="2402" y="652" width="36" height="36" />
+        <dc:Bounds x="2402" y="712" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_04m434i_di" bpmnElement="Event_04qot35">
-        <dc:Bounds x="2312" y="572" width="36" height="36" />
+        <dc:Bounds x="2312" y="632" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="2334" y="615" width="31" height="14" />
+          <dc:Bounds x="2334" y="675" width="31" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_149ossd_di" bpmnElement="Flow_149ossd">
-        <di:waypoint x="2206" y="550" />
-        <di:waypoint x="2260" y="550" />
+        <di:waypoint x="2206" y="610" />
+        <di:waypoint x="2260" y="610" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08j7x8n_di" bpmnElement="Flow_08j7x8n">
-        <di:waypoint x="2360" y="550" />
-        <di:waypoint x="2422" y="550" />
+        <di:waypoint x="2360" y="610" />
+        <di:waypoint x="2422" y="610" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xp9lw4_di" bpmnElement="Flow_0xp9lw4">
-        <di:waypoint x="2330" y="608" />
-        <di:waypoint x="2330" y="670" />
-        <di:waypoint x="2402" y="670" />
+        <di:waypoint x="2330" y="668" />
+        <di:waypoint x="2330" y="730" />
+        <di:waypoint x="2402" y="730" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_08tb3rt_di" bpmnElement="Event_1s7c15t">
-        <dc:Bounds x="842" y="232" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_018jqrj_di" bpmnElement="Event_018jqrj">
+        <dc:Bounds x="2432" y="252" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="870" y="275" width="19" height="14" />
+          <dc:Bounds x="2435" y="295" width="33" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qygo03_di" bpmnElement="Activity_1n8jw00">
+        <dc:Bounds x="2240" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0xajody" bpmnElement="CreateWilliamsBates">
+        <dc:Bounds x="660" y="230" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0o31dku" bpmnElement="Event_1yyjbgg">
+        <dc:Bounds x="1752" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1781" y="335" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0a7ts9y" bpmnElement="Event_0dxb40n">
-        <dc:Bounds x="1392" y="232" width="36" height="36" />
+        <dc:Bounds x="1392" y="292" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1420" y="275" width="19" height="14" />
+          <dc:Bounds x="1420" y="335" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0o31dku" bpmnElement="Event_1yyjbgg">
-        <dc:Bounds x="1752" y="232" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_08tb3rt_di" bpmnElement="Event_1s7c15t">
+        <dc:Bounds x="842" y="292" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1781" y="275" width="19" height="14" />
+          <dc:Bounds x="870" y="335" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1gsvooc_di" bpmnElement="Flow_1gsvooc">
-        <di:waypoint x="288" y="210" />
-        <di:waypoint x="350" y="210" />
+        <di:waypoint x="288" y="270" />
+        <di:waypoint x="350" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1p8k90c_di" bpmnElement="Flow_1p8k90c">
-        <di:waypoint x="920" y="210" />
-        <di:waypoint x="990" y="210" />
+        <di:waypoint x="920" y="270" />
+        <di:waypoint x="990" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0j2cgtr_di" bpmnElement="Flow_0j2cgtr">
-        <di:waypoint x="450" y="210" />
-        <di:waypoint x="500" y="210" />
+        <di:waypoint x="450" y="270" />
+        <di:waypoint x="500" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08klpi3_di" bpmnElement="Flow_08klpi3">
-        <di:waypoint x="600" y="210" />
-        <di:waypoint x="670" y="210" />
+        <di:waypoint x="600" y="270" />
+        <di:waypoint x="660" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ozq1f5_di" bpmnElement="Flow_1ozq1f5">
-        <di:waypoint x="860" y="268" />
-        <di:waypoint x="860" y="288" />
-        <di:waypoint x="940" y="288" />
-        <di:waypoint x="940" y="240" />
-        <di:waypoint x="990" y="240" />
+        <di:waypoint x="860" y="328" />
+        <di:waypoint x="860" y="348" />
+        <di:waypoint x="940" y="348" />
+        <di:waypoint x="940" y="300" />
+        <di:waypoint x="990" y="300" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yw8jpx_di" bpmnElement="Flow_0yw8jpx">
-        <di:waypoint x="1090" y="210" />
-        <di:waypoint x="1150" y="210" />
+        <di:waypoint x="1090" y="270" />
+        <di:waypoint x="1160" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1oae2qp_di" bpmnElement="Flow_1oae2qp">
-        <di:waypoint x="1470" y="210" />
-        <di:waypoint x="1530" y="210" />
+        <di:waypoint x="1470" y="270" />
+        <di:waypoint x="1550" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1apcmsx_di" bpmnElement="Flow_1apcmsx">
-        <di:waypoint x="1410" y="268" />
-        <di:waypoint x="1410" y="288" />
-        <di:waypoint x="1490" y="288" />
-        <di:waypoint x="1490" y="240" />
-        <di:waypoint x="1530" y="240" />
+        <di:waypoint x="1410" y="328" />
+        <di:waypoint x="1410" y="348" />
+        <di:waypoint x="1490" y="348" />
+        <di:waypoint x="1490" y="290" />
+        <di:waypoint x="1550" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0gsjem7_di" bpmnElement="Flow_0gsjem7">
-        <di:waypoint x="1630" y="210" />
-        <di:waypoint x="1730" y="210" />
+        <di:waypoint x="1650" y="270" />
+        <di:waypoint x="1730" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_03qsr81_di" bpmnElement="Flow_03qsr81">
-        <di:waypoint x="1830" y="210" />
-        <di:waypoint x="1920" y="210" />
+        <di:waypoint x="1830" y="270" />
+        <di:waypoint x="1930" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0oijbog_di" bpmnElement="Flow_0oijbog">
-        <di:waypoint x="2020" y="210" />
-        <di:waypoint x="2070" y="210" />
+        <di:waypoint x="2030" y="270" />
+        <di:waypoint x="2070" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_156vlkm_di" bpmnElement="Flow_156vlkm">
-        <di:waypoint x="1770" y="268" />
-        <di:waypoint x="1770" y="288" />
-        <di:waypoint x="1845" y="288" />
-        <di:waypoint x="1845" y="240" />
-        <di:waypoint x="1920" y="240" />
+        <di:waypoint x="1770" y="328" />
+        <di:waypoint x="1770" y="348" />
+        <di:waypoint x="1845" y="348" />
+        <di:waypoint x="1845" y="290" />
+        <di:waypoint x="1930" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_15j7l9g_di" bpmnElement="Flow_15j7l9g">
-        <di:waypoint x="770" y="210" />
-        <di:waypoint x="820" y="210" />
+        <di:waypoint x="760" y="270" />
+        <di:waypoint x="820" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mt638j_di" bpmnElement="Flow_1mt638j">
-        <di:waypoint x="2170" y="210" />
-        <di:waypoint x="2240" y="210" />
+        <di:waypoint x="2170" y="270" />
+        <di:waypoint x="2240" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0nkogzw_di" bpmnElement="Flow_0nkogzw">
-        <di:waypoint x="1250" y="210" />
-        <di:waypoint x="1370" y="210" />
+        <di:waypoint x="1260" y="270" />
+        <di:waypoint x="1370" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_14mm3ff_di" bpmnElement="Flow_14mm3ff">
-        <di:waypoint x="2340" y="210" />
-        <di:waypoint x="2432" y="210" />
+        <di:waypoint x="2340" y="270" />
+        <di:waypoint x="2432" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Participant_09spq59_di" bpmnElement="Participant_0hhh09x" isHorizontal="true">
-        <dc:Bounds x="190" y="870" width="2060" height="130" />
+        <dc:Bounds x="190" y="930" width="2060" height="130" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1pociqz_di" bpmnElement="Flow_1pociqz">
-        <di:waypoint x="550" y="250" />
-        <di:waypoint x="550" y="870" />
+        <di:waypoint x="550" y="310" />
+        <di:waypoint x="550" y="930" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04z4w3o_di" bpmnElement="Flow_04z4w3o">
-        <di:waypoint x="1030" y="870" />
-        <di:waypoint x="1030" y="250" />
+        <di:waypoint x="1030" y="930" />
+        <di:waypoint x="1030" y="310" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04vas00_di" bpmnElement="Flow_04vas00">
-        <di:waypoint x="1580" y="250" />
-        <di:waypoint x="1580" y="870" />
+        <di:waypoint x="1600" y="310" />
+        <di:waypoint x="1600" y="930" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_12zmx2l_di" bpmnElement="Flow_12zmx2l">
-        <di:waypoint x="1970" y="250" />
-        <di:waypoint x="1970" y="870" />
+        <di:waypoint x="1970" y="310" />
+        <di:waypoint x="1970" y="930" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0pw5cfv_di" bpmnElement="Flow_0pw5cfv">
-        <di:waypoint x="720" y="250" />
-        <di:waypoint x="720" y="870" />
+        <di:waypoint x="710" y="310" />
+        <di:waypoint x="710" y="930" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_177nacg_di" bpmnElement="Flow_177nacg">
-        <di:waypoint x="1200" y="250" />
-        <di:waypoint x="1200" y="870" />
+        <di:waypoint x="1210" y="310" />
+        <di:waypoint x="1210" y="930" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

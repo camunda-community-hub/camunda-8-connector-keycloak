@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface KeycloakSubFunction {
-  KeycloakOutput executeSubFunction(KeycloakOperation keycloakOperation, KeycloakInput pdfInput,
+  KeycloakOutput executeSubFunction(KeycloakOperation keycloakOperation,
+                                    KeycloakInput pdfInput,
                                     OutboundConnectorContext context) throws ConnectorException;
 
   List<RunnerParameter> getInputsParameter();
@@ -24,6 +25,5 @@ public interface KeycloakSubFunction {
   String getSubFunctionDescription();
 
   String getSubFunctionType();
-
 
 }
