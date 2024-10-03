@@ -1,4 +1,4 @@
-package io.camunda.connector.keycloak.user;
+package io.camunda.connector.keycloak.function;
 
 import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
@@ -36,7 +36,7 @@ public class DeleteUserFunction implements KeycloakSubFunction {
       throw ce;
     } catch (Exception e) {
       logger.error("Error during deleteUser on {} {} userId[{}]: {}", keycloakOperation.getKeycloakSignature(),
-          keycloakInput.getUserSignature(), keycloakInput.getUserId(), e);
+          keycloakInput.getUserSignature(), keycloakInput.getUserId(), e.getMessage());
       throw new ConnectorException(KeycloakOperation.ERROR_UPDATE_USER, "Error during update-user " + e.getMessage());
     }
   }
