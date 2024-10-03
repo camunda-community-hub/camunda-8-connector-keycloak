@@ -1,4 +1,4 @@
-package io.camunda.connector.keycloak.user;
+package io.camunda.connector.keycloak.function;
 
 import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
@@ -52,7 +52,7 @@ public class CreateUserFunction implements KeycloakSubFunction {
       throw ce;
     } catch (Exception e) {
       logger.error("Error during KeycloakCreateUser on {} {} : {}", keycloakOperation.getKeycloakSignature(),
-          keycloakInput.getUserSignature(), e);
+          keycloakInput.getUserSignature(), e.getMessage());
       throw new ConnectorException(KeycloakOperation.ERROR_CREATE_USER, "Error during add-user " + e.getMessage());
     }
   }

@@ -1,4 +1,4 @@
-package io.camunda.connector.keycloak.user;
+package io.camunda.connector.keycloak.function;
 
 import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;

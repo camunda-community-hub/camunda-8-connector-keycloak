@@ -1,4 +1,4 @@
-package io.camunda.connector.keycloak.user;
+package io.camunda.connector.keycloak.function;
 
 import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorContext;
@@ -66,7 +66,7 @@ public class UpdateUserFunction implements KeycloakSubFunction {
       throw ce;
     } catch (Exception e) {
       logger.error("Error during UpdateUser on {} {} {}: {}", keycloakOperation.getKeycloakSignature(),
-          keycloakInput.getUserSignature(), trace, e);
+          keycloakInput.getUserSignature(), trace, e.getMessage());
       throw new ConnectorException(KeycloakOperation.ERROR_UPDATE_USER, "Error during update-user " + e.getMessage());
     }
   }
@@ -167,7 +167,6 @@ public class UpdateUserFunction implements KeycloakSubFunction {
         KeycloakOperation.ERROR_UPDATE_USER, KeycloakOperation.ERROR_UPDATE_USER_LABEL, //
         KeycloakOperation.ERROR_CANT_UPDATE_USERNAME, KeycloakOperation.ERROR_CANT_UPDATE_USERNAME_LABEL, //
         KeycloakOperation.ERROR_UNKNOWN_USER, KeycloakOperation.ERROR_UNKNOWN_USER_LABEL, //
-        KeycloakOperation.ERROR_UPDATE_USER, KeycloakOperation.ERROR_UPDATE_USER_LABEL, //
         KeycloakOperation.ERROR_USER_SET_PASSWORD, KeycloakOperation.ERROR_USER_SET_PASSWORD_LABEL);
   }
 
