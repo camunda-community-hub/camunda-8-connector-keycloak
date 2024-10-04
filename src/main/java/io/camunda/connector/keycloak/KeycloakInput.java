@@ -41,7 +41,7 @@ public class KeycloakInput implements CherryInput {
 
   public static final String INPUT_USER_REALM = "userRealm";
   public static final String INPUT_USER_REALM_LABEL = "User realm";
-  public static final String INPUT_USER_REALM_EXPLANATION = "The user is created in a realm";
+  public static final String INPUT_USER_REALM_EXPLANATION = "The user is managed in a realm";
   public static final String INPUT_USER_REALM_DEFAULT = "camunda-platform";
   public static final String INPUT_USER_NAME = "userName";
   public static final String INPUT_USER_NAME_LABEL = "User Name";
@@ -99,7 +99,7 @@ public class KeycloakInput implements CherryInput {
   public static final String INPUT_CONNECTION_TYPE_V_USER = "USER";
   public static final String INPUT_CONNECTION_TYPE_V_CLIENT_ID = "CLIENTID";
   public static final String INPUT_CONNECTION_TYPE_V_KEYCLOAK_CONNECTION_URL = "CONNECTIONURL";
-  public static final String INPUT_CONNECTION_TYPE_LABEL = "Keycloack Connection ";
+  public static final String INPUT_CONNECTION_TYPE_LABEL = "Type of Keycloack Connection ";
   public static final String INPUT_CONNECTION_TYPE_EXPLANATION = "Connection to Keycloak engine";
 
   public static final String INPUT_KEYCLOAK_CONNECTION_URL = "keycloakConnectionUrl";
@@ -107,32 +107,33 @@ public class KeycloakInput implements CherryInput {
   public static final String INPUT_KEYCLOAK_CONNECTION_URL_EXPLANATION =
       "Check documentation: USERID;serverUrl;" + "realm;clientid;adminusername;adminpassword for example";
 
-  public Boolean userEnabled = null;
-  public String userRoles = "";
-  String connectionRealm = "master";  // The realm to connect
-  String clientId = "";  // Client ID for authentication
-  String clientSecret = "";  // Client ID for authentication
-  String adminUserName = "admin";  // Admin username
-  String adminUserPassword = "admin";  // Admin password
-  private String keycloakFunction = "";
-  private String serverUrl = "http://localhost:8080/auth";  // Keycloak server URL
-  private String userRealm = INPUT_USER_REALM_DEFAULT;
-  private String userName = "";
-  private String userFirstName = "";
-  private String userLastName = "";
-  private String userEmail = "";
+  private final Boolean userEnabled = null;
+  private final String userRoles = "";
+  private final String connectionRealm = "master";  // The realm to connect
+  private final String clientId = "";  // Client ID for authentication
+  private final String clientSecret = "";  // Client ID for authentication
+  private final String adminUserName = "admin";  // Admin username
+  private final String adminUserPassword = "admin";  // Admin password
+  private final String keycloakFunction = "";
+  private final String serverUrl = "http://localhost:8080/auth";  // Keycloak server URL
+  private final String userRealm = INPUT_USER_REALM_DEFAULT;
+  private final String userName = "";
+  private final String userFirstName = "";
+  private final String userLastName = "";
+  private final String userEmail = "";
 
-  private String searchByUserId = "";
-  private String searchByUserName = "";
-  private String searchByUserFirstName = "";
-  private String searchByUserLastName = "";
-  private String searchByUserEmail = "";
+  private final String searchByUserId = "";
+  private final String searchByUserName = "";
+  private final String searchByUserFirstName = "";
+  private final String searchByUserLastName = "";
+  private final String searchByUserEmail = "";
 
   private Boolean errorIfUserExists = Boolean.TRUE;
   private String userPassword = "";
   private String userId = "";
   private int pageNumber = 0;
   private int pageSize = 100;
+
   private String connectionType = INPUT_CONNECTION_TYPE_V_USER;
   private String keycloakConnectionUrl = "";
 

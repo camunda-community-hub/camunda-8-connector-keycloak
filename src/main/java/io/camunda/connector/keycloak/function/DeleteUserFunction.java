@@ -81,7 +81,7 @@ public class DeleteUserFunction implements KeycloakSubFunction {
     return Map.of(KeycloakOperation.ERROR_KEYCLOAK_CONNECTION, KeycloakOperation.ERROR_KEYCLOAK_CONNECTION_LABEL, //
         KeycloakFunction.ERROR_UNKNOWN_FUNCTION, KeycloakFunction.ERROR_UNKNOWN_FUNCTION_LABEL, //
         KeycloakOperation.ERROR_DELETE_USER, KeycloakOperation.ERROR_DELETE_USER_LABEL, //
-        KeycloakOperation.ERROR_UNKNOWN_USER, KeycloakOperation.ERROR_UNKNOWN_USER_LABEL);
+        KeycloakOperation.ERROR_UNKNOWN_USERID, KeycloakOperation.ERROR_UNKNOWN_USERID_LABEL);
   }
 
   @Override

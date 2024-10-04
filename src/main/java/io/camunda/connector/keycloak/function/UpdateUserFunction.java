@@ -166,7 +166,7 @@ public class UpdateUserFunction implements KeycloakSubFunction {
         KeycloakFunction.ERROR_UNKNOWN_FUNCTION, KeycloakFunction.ERROR_UNKNOWN_FUNCTION_LABEL, //
         KeycloakOperation.ERROR_UPDATE_USER, KeycloakOperation.ERROR_UPDATE_USER_LABEL, //
         KeycloakOperation.ERROR_CANT_UPDATE_USERNAME, KeycloakOperation.ERROR_CANT_UPDATE_USERNAME_LABEL, //
-        KeycloakOperation.ERROR_UNKNOWN_USER, KeycloakOperation.ERROR_UNKNOWN_USER_LABEL, //
+        KeycloakOperation.ERROR_UNKNOWN_USERID, KeycloakOperation.ERROR_UNKNOWN_USERID_LABEL, //
         KeycloakOperation.ERROR_USER_SET_PASSWORD, KeycloakOperation.ERROR_USER_SET_PASSWORD_LABEL);
   }
 

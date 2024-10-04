@@ -156,7 +156,7 @@ public class CreateUserFunction implements KeycloakSubFunction {
         KeycloakOperation.ERROR_USER_ALREADY_EXIST, KeycloakOperation.ERROR_USER_ALREADY_EXIST_LABEL, //
         KeycloakOperation.ERROR_CREATE_USER, KeycloakOperation.ERROR_CREATE_USER_LABEL, //
         KeycloakOperation.ERROR_USER_SET_PASSWORD, KeycloakOperation.ERROR_USER_SET_PASSWORD_LABEL, //
-        KeycloakOperation.ERROR_UNKNOWN_USER, KeycloakOperation.ERROR_UNKNOWN_USER_LABEL, //
+        KeycloakOperation.ERROR_UNKNOWN_USERID, KeycloakOperation.ERROR_UNKNOWN_USERID_LABEL, //
         KeycloakOperation.ERROR_CANT_ACCESS_USER_ROLES, KeycloakOperation.ERROR_CANT_ACCESS_USER_ROLES_LABEL, //
         KeycloakOperation.ERROR_UNKNOWN_ROLE, KeycloakOperation.ERROR_UNKNOWN_ROLE_LABEL,  //
         KeycloakOperation.ERROR_DELETE_ROLE_USER, KeycloakOperation.ERROR_DELETE_ROLE_USER_LABEL, //

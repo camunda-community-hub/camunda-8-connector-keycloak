@@ -157,15 +157,15 @@ public class SearchUserFunction implements KeycloakSubFunction {
 
         RunnerParameter.getInstance(KeycloakInput.INPUT_PAGE_NUMBER, //
             KeycloakInput.INPUT_PAGE_NUMBER_LABEL, //
-            String.class, //
-            "", //
+            Integer.class, //
+            0, //
             RunnerParameter.Level.OPTIONAL, //
             KeycloakInput.INPUT_PAGE_NUMBER_EXPLANATION),//
 
         RunnerParameter.getInstance(KeycloakInput.INPUT_PAGE_SIZE, //
             KeycloakInput.INPUT_PAGE_SIZE_LABEL, //
-            String.class, //
-            "", //
+            Integer.class, //
+            100, //
             RunnerParameter.Level.OPTIONAL, //
             KeycloakInput.INPUT_PAGE_SIZE_EXPLANATION));//
 

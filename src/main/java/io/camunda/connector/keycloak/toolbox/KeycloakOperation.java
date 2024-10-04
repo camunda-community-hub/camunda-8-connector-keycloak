@@ -32,8 +32,8 @@ public class KeycloakOperation {
   public final static String ERROR_KEYCLOAK_CONNECTION_LABEL = "Error arrived during the Keycloak connection";
   public final static String ERROR_CREATE_USER = "CREATE_USER";
   public final static String ERROR_CREATE_USER_LABEL = "Create user failed";
-  public final static String ERROR_UNKNOWN_USER = "UNKNOWN_USER";
-  public final static String ERROR_UNKNOWN_USER_LABEL = "Userid given is not found in Keycloak";
+  public final static String ERROR_UNKNOWN_USERID = "UNKNOWN_USER";
+  public final static String ERROR_UNKNOWN_USERID_LABEL = "Userid given is not found in Keycloak";
   public final static String ERROR_USER_ALREADY_EXIST = "USER_ALREADY_EXIST";
   public final static String ERROR_USER_ALREADY_EXIST_LABEL = "The username is unique in keycloak";
   public final static String ERROR_USER_SET_PASSWORD = "USER_SET_PASSWORD";
@@ -198,7 +198,7 @@ public class KeycloakOperation {
    * @param email        email
    * @param userPassword password of user
    * @param enabledUser  user is enabled
-   * @return
+   * @return result of creation
    * @throws ConnectorException ERROR_USER_ALREADY_EXIST,ERROR_CREATE_USER, ERROR_USER_SET_PASSWORD
    */
   public KeycloakResult createUser(String realm,
@@ -325,7 +325,7 @@ public class KeycloakOperation {
       userResource = keycloak.realm(realm).users().get(userId);
     } catch (Exception e) {
       logger.error("Unknown user [{}]", userId);
-      throw new ConnectorException(ERROR_UNKNOWN_USER, "UserId[" + userId + "] unknown");
+      throw new ConnectorException(ERROR_UNKNOWN_USERID, "UserId[" + userId + "] unknown");
     }
 
     String trace = "";
@@ -375,7 +375,7 @@ public class KeycloakOperation {
         response.close(); // Close the response to avoid resource leaks
       if (responseStatus == 404) {
         logger.error("DeleteUser: UserId[{}] unknown in real[{}]", userId, realm);
-        throw new ConnectorException(KeycloakOperation.ERROR_UNKNOWN_USER,
+        throw new ConnectorException(KeycloakOperation.ERROR_UNKNOWN_USERID,
             "User[" + userId + "] unknown in real[" + realm + "]");
       }
       logger.info("DeleteUser UserId[{}] Realm[{}] in {} ms", userId, realm, System.currentTimeMillis() - markerTime);
@@ -405,7 +405,7 @@ public class KeycloakOperation {
       userResource = usersResource.get(userId);
     } catch (Exception e) {
       logger.error("Unknown userId[{}] in realm[{}}] : {} ", userId, realm, e);
-      throw new ConnectorException(ERROR_UNKNOWN_USER, "UserId[" + userId + "] unknown");
+      throw new ConnectorException(ERROR_UNKNOWN_USERID, "UserId[" + userId + "] unknown");
     }
 
     // getAll current roles attaches to the user
