@@ -5,7 +5,7 @@
 
 # camunda-8-connector-keycloak
 
-Connector to manage users, authorization on Keycloak.
+A connector will be used to manage users and authorization on Keycloak.
 
 
 # Principle
@@ -13,108 +13,108 @@ Connector to manage users, authorization on Keycloak.
 
 ## Keycloak and Identity
 
-To access the platform (Operate, TaskList, Optimize), a user must be registered if the "identity" is set up. 
-It's possible to set up these application to use a "demo" user, but this configuration is not the purpose of this discusssion.
+A user must be registered if the "identity" is set up to access the platform (Operate, TaskList, Optimize).
+It's possible to set up this application to use a "demo" user, but this configuration is not the purpose of this discussion.
 
 
-Via Keykloak or directly via Identity, you can branch a SSO. But you don't want all users registered in the SSO access Operate.
-This is why users has to be registered to be accepted in Operate, or/and Tasklist, or/and Optimize
+You can branch an SSO via Keykloak or directly via Identity. However, you want only some users registered in the SSO to access Operate.
+This is why users have to be registered to be accepted in Operate, or/and Tasklist, or/and Optimize
 
-It's possible to connect Identity directly to an SSO. Then, users must be registered via Identity. Identity offered an Web Application to do that, but not yet an API.
+It's possible to connect Identity directly to an SSO. Then, users must register via Identity. Identity offers a Web Application for this, but not yet an API.
 
- ![Operate-identity.png](/doc/Operate-identity.png)
+![Operate-identity.png](/doc/Operate-identity.png)
 
-Identity can be connected to a Keycloak server. Then, Operate goes via Keycloak to check the permission, and user can be registered in Keycloack, not need to be in Identity.
-Keycloak has an API, and this connector use it.
+Identity can be connected to a Keycloak server. Then, Operate goes via Keycloak to check permissions, and users can be registered in Keycloack without needing to be in Identity.
+Keycloak has an API, and this connector uses it.
 
 ![Operate-identity-Keycloak.png](/doc/Operate-identity-Keycloak.png)
 
-In the following of the discussion, we consider the architecture with Identity and Keycloak.
+In the following discussion, we consider the architecture with Identity and Keycloak.
 
 
 ## Authentication, Identification, Authorization
 
-A tool like Operate check the three level. It communicate with Keycloak to check the user. If an LDAP is registered, Operate ask for a Login/Password, and send it to Keycloak, which verufury it on the LDAP database, to validate it.
-If a Single Sign On is connected, then Keyclaok ask this component for the user name.
+A tool like Operate checks the three levels. It communicates with Keycloak to check the user. Operate asks for a Login/Password if an LDAP is registered and sends it to Keycloak, which verifies it in the LDAP database to validate it.
+Keyclaok asks this component for the user name if a Single Sign is connected.
 
-Then Operate check if the user can access it. This is the Autorization level. It's possible to give that information in Identity, but in Keycloak too.
-At begining, Identity created different roles in Keycloak. The user must be registered in Keycloak, and roles associated with the user. 
+Then, the Operate checks if the user can access it. This is the Authorization level. You can also give that information in Identity and Keycloak.
+In the beginning, Identity created different roles in Keycloak. The user must be registered in Keycloak, and roles must be associated with the user.
 
 ## camunda-platform realm
 
-At startup, Identity connect to Keycloak. it creates inside the Keuycloak database multiple artifacts
+At startup, Identity connects to Keycloak. it creates inside the Keycloak database artifacts
 * a Realm name "camunda-platform"
-A Realm in Keycloak groups users, roles. It's offering a good container.
+  A Realm in Keycloak groups users and roles. It offers a suitable container.
 
 * Roles Operate, Tasklist, Optimize
-Users associated with these roles can access the application.
+  Users associated with these roles can access the application.
 
 ## Connect to Keycloak
 
-Identity create a Realm inside Keycloak. Otherweise, wwhen you want to connect, you must specify the realm where the user is. 
-And this user must have enought permussion to add, delete, update users in the camunda-platform realm.
-This is why the connector use two different realm:
-* the realm used for the connection, for example **master**
-* the realm used to creates users, in general, **camunda-realm**
+Identity creates a Realm inside Keycloak. Otherwise, when you want to connect, you must specify the realm where the user is.
+This user must be permitted to add, delete, and update users in the camunda-platform realm.
+This is why the connector uses two different realms:
+* the realm used for the connection, for example, **master**
+* the realm used to create users, in general, **camunda-realm**
 
-Then, there is three ways to connect:
+Then there are three ways to connect:
 * userName
 * Client
 * KeycloakUrlString
 
 ### userName
 The connection contains:
-* the server's URL
+* The server's URL
 * the realm where the user is defined
 * the user's name,
 * the user's password
 * a ClientID. The clientId contains the permissions. The clientId must be in the same realm as the user name.
 
 ## ClientID
-ATTENTION: this connection does not pass our test. We keep the connection for test purpose: if it's working with you, let us know!
+ATTENTION: This connection does not pass our test. We keep the connection for testing purposes. If it's working with you, let us know!
 You need
-* the server's URL
+* The server's URL
 * the realm where the ClientID is defined
 * the clientID
-* the clientSecreat
+* The clientSecret
 
 ## Connection URL
-To have only one parameter, and simplify the usage if you want to save the connection as a configMap, it's possible to use a Connection String.
+It's possible to use a Connection String to save the connection as a configMap with only one parameter and simplify the usage.
 
-The connection string accept two format:
+The connection string accepts two formats:
 ```
 USERID;serverUrl;realm;clientid;adminusername;adminpasswor
 CLIENTID;serverUrl;realm;clientid;clientsecret
 ```
-The first parameter describe the type of connection. Then, according to the type, different parameters.
+The first parameter describes the type of connection. Then, according to the type, different parameters.
 
 
 
 
 ## Functions available in the connector
 
-Functions avalable allow the management of users for Camunda. Via the connector, all operations can be automate.
+Functions available allow Camunda to manage users. Via the connector, all operations can be automated.
 
 ![KeycloakOperations.png](/doc/KeycloakOperations.png)
 
-* Create a user: even if Keycloak is link to a SSO or a LDAP, it's mandatory to register users in Keycloak, to pass the Authorization.
-The create user function register a new user in a realm.
+* Create a user: Even if Keycloak is linked to an SSO or an LDAP, it's mandatory to register users in Keycloak to pass the Authorization.
+  The create user function registers a new user in a realm.
 
-* Update a user: Email change? Password change? or change the permission, removing Operate role on a user?
+* Update a user: Should an email or password be changed, or should the permission be changed, removing the Operate role from a user?
 
-* Search users: The search function starts with userName, first or last name, email. It return a pagination list of users.
+* Search users: The search function starts with a username, first or last name, and email. It returns a pagination list of users.
 
-* Delete user: for the userId, the user is deleted in Keycloak.
+* Delete user: For the userId, the user is deleted from Keycloak.
 
 # Functions
 
 The first parameter is the Keycloak function. According to the function you chose, different parameters show up.
 
-All functions need the access to the Keycloak. These parameters are shared with all functions
+All functions need access to the Keycloak. These parameters are shared with all functions.
 
-| Name            | Description                                                        | Class             | Default | Level     |
-|-----------------|--------------------------------------------------------------------|-------------------|---------|-----------|
-| connectionType  | Type of Keycloak connection `USER` or `CLIENTID` or `CONNECTIONURL` | java.lang.String  | `USER`  | REQUIRED  |
+| Name            | Description                                                          | Class             | Default | Level     |
+|-----------------|----------------------------------------------------------------------|-------------------|---------|-----------|
+| connectionType  | Type of Keycloak connection `USER` or `CLIENTID` or `CONNECTIONURL`  | java.lang.String  | `USER`  | REQUIRED  |
 
 For connection type `USER`
 
@@ -123,7 +123,7 @@ For connection type `USER`
 | serverUrl          | URL to connect the Keycloak server (for `USER` and `CLIENTID`) | java.lang.String  |          | REQUIRED  |
 | connectionRealm    | connection Realm                                               | java.lang.String  | `master` | REQUIRED  |
 | clientId           | Client Id used for the connection, to retrieve permission      | java.lang.String  | `master` | REQUIRED  |
-| adminUserName      | Connection based on User : the admin user                      | java.lang.String  | `admin`  | REQUIRED  |
+| adminUserName      | Connection based on User: the admin user                       | java.lang.String  | `admin`  | REQUIRED  |
 | adminUserPassword  | Admin User Password                                            | java.lang.String  |          | REQUIRED  |
 
 For connection type `CLIENTID`
@@ -141,15 +141,15 @@ For connection type `CONNECTIONURL`
 |------------------------|-------------------------|-------------------|---------|-----------|
 | keycloakConnectionUrl  | Keycloak Connection Url | java.lang.String  |         | REQUIRED  |
 
-Check the "Connection URL" section
+Check the "Connection URL" section.
 
 
 
-Then this parameter describe the function
+Then, this parameter describes the function.
 
-| Name              | Description           | Class             | Default | Level     |
-|-------------------|-----------------------|-------------------|---------|-----------|
-| keycloakFunction  | Function: `create-user`  | java.lang.String  |         | REQUIRED  |
+| Name              | Description                                                            | Class             | Default | Level     |
+|-------------------|------------------------------------------------------------------------|-------------------|---------|-----------|
+| keycloakFunction  | Function: `create-user`, `search-users`, `update-user`, `delete-user`  | java.lang.String  |         | REQUIRED  |
 
 
 
@@ -157,23 +157,25 @@ Then this parameter describe the function
 
 ## Principle
 
-From parameters, create a new user in the `camunda-platform` realm.
+Create a user in Keycloak, in the real "camunda-platform." The user can access Operate, Tasklist, and Optimize. During the creation, roles can be assigned.
+
+
 keycloakFunction = `create-user`
 
 ![KeycloakUser.png](/doc/KeycloakUser.png)
 
 ## Inputs
-| Name               | Description                                                                                        | Class             | Default            | Level    |
-|--------------------|----------------------------------------------------------------------------------------------------|-------------------|--------------------|----------|
-| userRealm          | The user is created in a realm                                                                     | java.lang.String  | `camunda-platform` | REQUIRED |
-| userName           | The user name must be unique in a realm's Keycloak                                                 | java.lang.String  |                    | REQUIRED | 
-| userFirstName      | "First name of the user                                                                            | Java.lang.String  |                    | OPTIONAL |
-| userLastName       | Last name of the user                                                                              | Java.lang.String  |                    | OPTIONAL |
-| userEmail          | Email of the user                                                                                  | Java.lang.String  |                    | OPTIONAL |
-| userPassword       | Password of the user, if password is manage by Keycloak                                            | Java.lang.String  |                    | OPTIONAL |
-| userEnabled        | User enabled.                                                                                      | Java.lang.Boolean | false              | OPTIONAL |
-| userRoles          | User roles assigned to the user, in `Operate`,`Tasklist`,`Optimize` (1)                            | Java.lang.String  |                    | OPTIONAL |
-| errorIfUserExists  | If true, an BPMN error is thrown if the user already exists- else it's updated except the userName | Java.lang.Boolean | true               | OPTIONAL |
+| Name               | Description                                                                                       | Class             | Default            | Level    |
+|--------------------|---------------------------------------------------------------------------------------------------|-------------------|--------------------|----------|
+| userRealm          | The user is created in a realm                                                                    | java.lang.String  | `camunda-platform` | REQUIRED |
+| userName           | The user name must be unique in a realm's Keycloak                                                | java.lang.String  |                    | REQUIRED | 
+| userFirstName      | "First name of the user                                                                           | Java.lang.String  |                    | OPTIONAL |
+| userLastName       | Last name of the user                                                                             | Java.lang.String  |                    | OPTIONAL |
+| userEmail          | Email of the user                                                                                 | Java.lang.String  |                    | OPTIONAL |
+| userPassword       | Password of the user, if the password is managed by Keycloak                                      | Java.lang.String  |                    | OPTIONAL |
+| userEnabled        | User enabled.                                                                                     | Java.lang.Boolean | false              | OPTIONAL |
+| userRoles          | User roles assigned to the user, in `Operate`,`Tasklist`,`Optimize` (1)                           | Java.lang.String  |                    | OPTIONAL |
+| errorIfUserExists  | If true, a BPMN error is thrown if the user already exists- else it's updated except the userName | Java.lang.Boolean | true               | OPTIONAL |
 
 (1) UserRole: give a string separate by n like "Operate,Tasklist" or "Optimize"
 
@@ -186,31 +188,31 @@ keycloakFunction = `create-user`
 
 ## BPMN Errors
 
-| Name                   | Explanation                                                                         |
-|------------------------|-------------------------------------------------------------------------------------|
-| KEYCLOAK_CONNECTION    | Error arrived during the Keycloak connection                                        |
-| UNKNOWN_FUNCTION       | The function is unknown. There is a limited number of operation                     |
-| USER_ALREADY_EXIST     | The username is unique in keycloak                                                  |
-| CREATE_USER            | Create user failed                                                                  |
-| USER_SET_PASSWORD      | Password can't be set                                                               |
-| UNKNOWN_USER           | Userid given is not found in Keycloak (Keycloak does not return an correct UserId)  |
-| CANT_ACCESS_USER_ROLES | Can't access user roles                                                             |
-| UNKNOWN_ROLE           | Role given is not found in Keycloak                                                 |
-| DELETE_ROLE_USER       | Removing the role from the user fail                                                | 
-| ADD_ROLE_USER          | Adding a role to the user fail                                                      |
+| Name                   | Explanation                                                                        |
+|------------------------|------------------------------------------------------------------------------------|
+| KEYCLOAK_CONNECTION    | Error arrived during the Keycloak connection                                       |
+| UNKNOWN_FUNCTION       | The function is unknown. There is a limited number of operations                   |
+| USER_ALREADY_EXIST     | The username is unique in keycloak                                                 |
+| CREATE_USER            | Create user failed                                                                 |
+| USER_SET_PASSWORD      | password can't be set                                                              |
+| UNKNOWN_USER           | Userid given is not found in Keycloak (Keycloak does not return a correct UserId)  |
+| CANT_ACCESS_USER_ROLES | Can't access user roles                                                            |
+| UNKNOWN_ROLE           | The Role given is not found in Keycloak                                            |
+| DELETE_ROLE_USER       | Removing the role from the user fail                                               | 
+| ADD_ROLE_USER          | Adding a role to the user fail                                                     |
 
 
 
 # Search users
 
+Search users on multiple criteria or from a user.
+keycloakFunction = `search-users`
 
 ![KeycloakListOfUsers.png](/doc/KeycloakListOfUsers.png)
 
 ## Principle
 
-A list of PDF documents is in input, and one document is produced.
-The resulting document contains all pages from the first document, the second document, and so on.
-The order from the input list is used to produce the result.
+
 
 ## Inputs
 | Name                  | Description                       | Class             | Default             | Level    |
@@ -238,11 +240,11 @@ The order from the input list is used to produce the result.
 
 ## BPMN Errors
 
-| Name                | Explanation                                                     |
-|---------------------|-----------------------------------------------------------------|
-| KEYCLOAK_CONNECTION | Error arrived during the Keycloak connection                    |
-| UNKNOWN_FUNCTION    | The function is unknown. There is a limited number of operation |
-| SEARCH_USER         | During search user(s) in Keycloak                               |
+| Name                | Explanation                                                       |
+|---------------------|-------------------------------------------------------------------|
+| KEYCLOAK_CONNECTION | Error arrived during the Keycloak connection                      |
+| UNKNOWN_FUNCTION    | The function is unknown. There is a limited number of operations  |
+| SEARCH_USER         | During search user(s) in Keycloak                                 |
 
 
 # Update user
@@ -251,7 +253,9 @@ The order from the input list is used to produce the result.
 
 ## Principle
 
-A watermark is added to each page. The watermark can be placed at the bottom, center, or lower, rotated, and set in size and color.
+From the userId, update the user's properties, such as first name, last name, and email. Also, update the list of assigned roles for the user.
+
+keycloakFunction = `update-user`
 
 ## Inputs
 | Name           | Description                                                             | Class             | Default            | Level    |
@@ -261,7 +265,7 @@ A watermark is added to each page. The watermark can be placed at the bottom, ce
 | userFirstName  | "First name of the user                                                 | Java.lang.String  |                    | OPTIONAL |
 | userLastName   | Last name of the user                                                   | Java.lang.String  |                    | OPTIONAL |
 | userEmail      | Email of the user                                                       | Java.lang.String  |                    | OPTIONAL |
-| userPassword   | Password of the user, if password is manage by Keycloak                 | Java.lang.String  |                    | OPTIONAL |
+| userPassword   | Password of the user, if the password is managed by Keycloak            | Java.lang.String  |                    | OPTIONAL |
 | userEnabled    | User enabled.                                                           | Java.lang.Boolean | false              | OPTIONAL |
 | userRoles      | User roles assigned to the user, in `Operate`,`Tasklist`,`Optimize` (1) | Java.lang.String  |                    | OPTIONAL |
 
@@ -275,19 +279,21 @@ A watermark is added to each page. The watermark can be placed at the bottom, ce
 
 ## BPMN Errors
 
-| Name                 | Explanation                                                     |
-|----------------------|-----------------------------------------------------------------|
-| KEYCLOAK_CONNECTION  | Error arrived during the Keycloak connection                    |
-| UNKNOWN_FUNCTION     | The function is unknown. There is a limited number of operation |
-| UPDATE_USER          | During update user in Keycloak                                  |
-| CANT_UPDATE_USERNAME | Keycloak does not allow to update the username                  |
-| UNKNOWN_USERID       | Userid given is not found in Keycloak                           |
-| USER_SET_PASSWORD    | Password can't be set                                           |
+| Name                 | Explanation                                                       |
+|----------------------|-------------------------------------------------------------------|
+| KEYCLOAK_CONNECTION  | Error arrived during the Keycloak connection                      |
+| UNKNOWN_FUNCTION     | The function is unknown. There is a limited number of operations  |
+| UPDATE_USER          | During the update user in Keycloak                                |
+| CANT_UPDATE_USERNAME | Keycloak does not allow to update the username                    |
+| UNKNOWN_USERID       | Userid given is not found in Keycloak                             |
+| USER_SET_PASSWORD    | password can't be set                                             |
 
 
 # Delete user
 
+Delete a user from its userId
 
+keycloakFunction = `update-user`
 ## Principle
 
 Get a list of images and create a PDF from it.
@@ -307,12 +313,12 @@ Get a list of images and create a PDF from it.
 
 ## BPMN Errors
 
-| Name                  | Explanation                                                     |
-|-----------------------|-----------------------------------------------------------------|
-| KEYCLOAK_CONNECTION   | Error arrived during the Keycloak connection                    |
-| UNKNOWN_FUNCTION      | The function is unknown. There is a limited number of operation |
-| ERROR_DELETE_USER     | During delete user in Keycloa                                   |
-| ERROR_UNKNOWN_USERID  | Userid given is not found in Keycloak                           |
+| Name                  | Explanation                                                       |
+|-----------------------|-------------------------------------------------------------------|
+| KEYCLOAK_CONNECTION   | Error arrived during the Keycloak connection                      |
+| UNKNOWN_FUNCTION      | The function is unknown. There is a limited number of operations  |
+| ERROR_DELETE_USER     | During deleting a user in Keycloa                                 |
+| ERROR_UNKNOWN_USERID  | Userid given is not found in Keycloak                             |
 
 
 # Build
@@ -321,9 +327,8 @@ Get a list of images and create a PDF from it.
 mvn clean package
 ```
 
-Two jars are produced. The jar with all dependencies can be upload in the [Cherry Framework](https://github.com/camunda-community-hub/zeebe-cherry-framework)
+Two jars are produced. The jar with all dependencies can be uploaded in the [Cherry Framework](https://github.com/camunda-community-hub/zeebe-cherry-framework)
 
 ## Element Template
 
-The element template can be found in the [element-templates](/element-template/keycloak-function.json) directory.
-
+The element template can be found in the [element-templates](/element-templates/keycloak-function.json) directory.
