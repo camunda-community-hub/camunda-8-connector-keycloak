@@ -1,9 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.example</groupId>
-  <artifactId>camunda-8-connector-keycloak</artifactId>
-  <version>1.0.0</version>
+  <groupId>org.camunda.connector</groupId>
+  <artifactId>connector-keycloak</artifactId>
+  <!-- 1.1.0 normalize groupId and artifactId. -->
+  <version>1.1.0</version>
 
   <packaging>jar</packaging>
 
@@ -193,6 +194,61 @@
             <shadedClassifierName>with-dependencies</shadedClassifierName>
             <!-- no need for this since we are not consuming this artifact downstream -->
             <createDependencyReducedPom>false</createDependencyReducedPom>
+            <!-- "with-dependencies": a convenience jar for local use (upload to a Connector Runtime
+                 or Cherry instance by hand). Those hosts already provide the Camunda connector/
+                 client/FEEL/Zeebe stack, logging, gRPC/Netty, Jackson's core databind libraries,
+                 Apache Commons and BouncyCastle, so those groupIds are excluded here by groupId
+                 (never with a blanket "*:*", which would also strip this project's OWN classes -
+                 verified in the sibling connectors this pattern comes from).
+                 The Keycloak admin client stack (org.keycloak:*, org.jboss.resteasy:*, the
+                 org.jboss.spec JAX-RS/JAXB API jars, com.fasterxml.jackson.jaxrs:* and
+                 com.fasterxml.jackson.module:jackson-module-jaxb-annotations used by resteasy's
+                 Jackson provider, and the plain v4 org.apache.httpcomponents:httpclient/httpcore -
+                 distinct from Camunda's own v5 .client5/.core5 transport) is NOT host-provided, so
+                 it is deliberately left out of this exclude list and stays bundled. -->
+            <artifactSet>
+              <excludes>
+                <!-- Camunda connector/client/FEEL/Zeebe stack (not in this project's own tree
+                     today, but excluded defensively for consistency with sibling connectors) -->
+                <exclude>io.camunda.connector:*</exclude>
+                <exclude>io.camunda:*</exclude>
+                <exclude>org.camunda.feel:*</exclude>
+                <exclude>org.camunda.bpm.model:*</exclude>
+                <!-- Logging -->
+                <exclude>org.slf4j:*</exclude>
+                <exclude>ch.qos.logback:*</exclude>
+                <exclude>org.apache.logging.log4j:*</exclude>
+                <!-- Hibernate Validator leakage from connector-validation (a "provided" scope
+                     dependency), whose own transitive deps are nonetheless reported as compile
+                     scope by dependency:tree - host already supplies these. -->
+                <exclude>org.hibernate.validator:*</exclude>
+                <exclude>jakarta.validation:*</exclude>
+                <exclude>org.jboss.logging:*</exclude>
+                <exclude>com.fasterxml:classmate</exclude>
+                <!-- gRPC / Netty (Zeebe gateway transport) -->
+                <exclude>io.grpc:*</exclude>
+                <exclude>io.netty:*</exclude>
+                <exclude>io.opencensus:*</exclude>
+                <exclude>io.perfmark:*</exclude>
+                <exclude>com.google.protobuf:*</exclude>
+                <exclude>com.google.api.grpc:*</exclude>
+                <!-- Jackson's own core/databind - host provides these; Keycloak's resteasy JAX-RS
+                     Jackson integration (com.fasterxml.jackson.jaxrs:*, jackson-module-jaxb-
+                     annotations) is a separate groupId/artifact and is intentionally NOT excluded
+                     here, since the host does not supply that integration layer. -->
+                <exclude>com.fasterxml.jackson.core:*</exclude>
+                <!-- Camunda's OWN http-client transport only (v5) - NOT the v4
+                     org.apache.httpcomponents (no suffix) that Keycloak's resteasy-client needs,
+                     which stays bundled. -->
+                <exclude>org.apache.httpcomponents.client5:*</exclude>
+                <exclude>org.apache.httpcomponents.core5:*</exclude>
+                <!-- Apache Commons / BouncyCastle (the actual org.apache.commons groupId - does
+                     NOT match commons-io/commons-logging/commons-codec, which are separate
+                     groupIds pulled in by Keycloak's resteasy-client and stay bundled) -->
+                <exclude>org.apache.commons:*</exclude>
+                <exclude>org.bouncycastle:*</exclude>
+              </excludes>
+            </artifactSet>
             <filters>
               <filter>
                 <artifact>*:*</artifact>
@@ -226,6 +282,7 @@
           </configuration>
           <executions>
             <execution>
+              <id>with-dependencies</id>
               <phase>package</phase>
               <goals>
                 <goal>shade</goal>
@@ -300,5 +357,50 @@
       <url>https://artifacts.camunda.com/artifactory/connectors-snapshots/</url>
     </pluginRepository>
   </pluginRepositories>
+
+  <profiles>
+    <!-- This project has no .github/workflows release pipeline today, so this profile is never
+         activated automatically. It's added anyway so that if/when a release pipeline is added
+         using the standard community-action-maven-release action (its default release-profile id -
+         see involvedusers' deploy.yml for the working reference), the with-dependencies shade
+         execution is already correctly scoped out of the Central release from day one. -->
+    <profile>
+      <id>community-action-maven-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>with-dependencies</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
